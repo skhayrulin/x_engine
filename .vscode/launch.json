@@ -5,7 +5,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/Release/Sibernetic",
+            "program": "${workspaceRoot}/release/x_engine",
             "args": [
                 "device=gpu",
                 "-f",

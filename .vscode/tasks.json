@@ -61,11 +61,7 @@
             "taskName": "run",
             "command": "./release/x_engine",
             "isShellCommand": true,
-            "args": [
-                "-no_g",
-                "-f",
-                "worm_in_agar"
-            ],
+            "args": [],
             "showOutput": "always"
         },
         {
