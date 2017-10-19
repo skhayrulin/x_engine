@@ -1,0 +1,100 @@
+{
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "debug",
+            // Make this the default build command.
+            "command": "make",
+            "isBuildCommand": true,
+            // Show the output window only if unrecognized errors occur.
+            "showOutput": "always",
+            // No args
+            "args": [
+                "debug"
+            ],
+            // Use the standard less compilation problem matcher.
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "taskName": "release",
+            // Make this the default build command.
+            "command": "make",
+            "isBuildCommand": true,
+            // Show the output window only if unrecognized errors occur.
+            "showOutput": "always",
+            // No args
+            "args": [
+                "all"
+            ],
+            // Use the standard less compilation problem matcher.
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "taskName": "run",
+            "command": "./release/x_engine",
+            "isShellCommand": true,
+            "args": [
+                "-no_g",
+                "-f",
+                "worm_in_agar"
+            ],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "clean",
+            // Make this the default build command.
+            "command": "make",
+            "isBuildCommand": true,
+            // Show the output window only if unrecognized errors occur.
+            "showOutput": "always",
+            // No args
+            "args": [
+                "clean"
+            ],
+            // Use the standard less compilation problem matcher.
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-C_PP = g++
+CXXCOMPILER = g++ -std=c++11
 TARGET := x_engine
 RM := rm -rf
 SRC_DIR := src
@@ -13,11 +13,18 @@ SRC = $(wildcard $(SRC_DIR)/*.$(SRC_EXT))
 
 OBJ := $(patsubst $(SRC_DIR)/%,$(BINARY_DIR)/%,$(SRC:.$(SRC_EXT)=.o))
 
+CXXFLAGS = $(CXXCOMPILER)
+
 all : $(TARGET)
-	
+all:  CXXFLAGS += -O3 -Wall 
+
+debug: CXXFLAGS += -ggdb -O0
+debug: $(TARGET)
+
+
 $(TARGET): $(OBJ)
 	@echo 'Building target: $@'
-	$(C_PP) -std=c++11 -L/usr/lib64/OpenCL/vendors/amd/ -o $(BUILD_DIR)/$(TARGET) $(OBJ) $(LIBS)
+	$(CXXFLAGS) -L/usr/lib64/OpenCL/vendors/amd/ -o $(BUILD_DIR)/$(TARGET) $(OBJ) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -26,7 +33,7 @@ $(BINARY_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(BINARY_DIR)
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	$(C_PP) -I/usr/include/python2.7 -I/opt/AMDAPPSDK-3.0/include/ -I$(INC_DIR) -O3 -Wall -c -fmessage-length=0 -o "$@" "$<"
+	$(CXXFLAGS) -I/usr/include/python2.7 -I/opt/AMDAPPSDK-3.0/include/ -I$(INC_DIR)  -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
