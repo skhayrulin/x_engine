@@ -40,4 +40,4 @@ $(BINARY_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 clean:
 	$(RM) $(BUILD_DIR)
 
-.PHONY: all clean
+.PHONY: all clean debug
