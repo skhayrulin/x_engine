@@ -43,16 +43,20 @@ solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t) {
   try {
     for (int i = 0; i < devices_number; ++i) {
       i_solver *s;
+      device d;
       switch (s_t) {
-      case OCL:
-        s = new ocl_solver();
+      case OCL: {
+        s = new ocl_solver(d);
+        device.push_back(d);
         _solvers.push_back(s);
         break;
+      }
       default:
         break;
       };
     }
-  } catch (std::string &err) {
+  } catch (std::runtime_error &err) {
+    destroy();
     throw;
   }
 }

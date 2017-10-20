@@ -34,11 +34,20 @@
 #include "ow_oclsolver.h"
 
 using sibernetic::solver::ocl_solver;
-
-ocl_solver::ocl_solver() {}
+using sibernetic::solver::DEVICE;
+ocl_solver::ocl_solver(DEVICE &d) {}
 
 void ocl_solver::init_ext_particles() {}
 void ocl_solver::run_neighbour_search() {}
 void ocl_solver::run_physic() {}
 
-void init_ocl() {}
+void initialize_ocl() {
+  cl_int err;
+  std::vector<cl::Platform> platformList;
+  std::vector<cl::Device> devices;
+  err = cl::Platform::get(
+      &platformList); // TODO make check that returned value isn't error
+  if (platformList.size() < 1 || err != CL_SUCCESS) {
+    throw std::runtime_error("No OpenCL platforms found");
+  }
+}

@@ -33,19 +33,34 @@
 #ifndef OW_OCLSOLVER
 #define OW_OCLSOLVER
 
+#if defined(_WIN32) || defined(_WIN64)
+#pragma comment(lib, "opencl.lib") // opencl.lib
+#endif
+
+#if defined(__APPLE__) || defined(__MACOSX)
+#include "../inc/OpenCL/cl.hpp"
+#else
+#include <CL/cl.hpp>
+#endif
 #include "ow_isolver.h"
 namespace sibernetic {
 namespace solver {
 class ocl_solver : public i_solver {
 public:
-  ocl_solver();
+  ocl_solver(DEVICE &d);
   ~ocl_solver(){};
   virtual void run_neighbour_search();
   virtual void run_physic();
 
 private:
   virtual void init_ext_particles();
-  void init_ocl();
+  void initialize_ocl();
+  cl::Kernel k_init_ext_particles;
+  cl::Buffer b_particles;
+  cl::Buffer b_ext_particles;
+  cl::Context context;
+  cl::CommandQueue queue;
+  cl::Program program;
 };
 }
 }
