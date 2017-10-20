@@ -30,18 +30,29 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_OCLSOLVER
-#define OW_OCLSOLVER
 
-#include "ow_isolver.h"
-namespace sibernetic {
-namespace solver {
-class ocl_solver : public i_solver {
-public:
-  ocl_solver();
+#include "ow_solver_container.h"
+#include "ow_oclsolver.h"
+#include <iostream>
 
-private:
-};
+using sibernetic::solver::solver_container;
+using sibernetic::solver::SOLVER_TYPE;
+
+solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t) {
+  _solvers.reserve(devices_number);
+  try {
+    for (int i = 0; i < devices_number; ++i) {
+      i_solver *s;
+      switch (s_t) {
+      case OCL:
+        s = new ocl_solver();
+        _solvers.push_back(s);
+        break;
+      default:
+        break;
+      };
+    }
+  } catch (std::string &err) {
+    throw;
+  }
 }
-}
-#endif

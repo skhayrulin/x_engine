@@ -30,20 +30,22 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_ISOLVER
-#define OW_ISOLVER
+#ifndef OW_OCLSOLVER
+#define OW_OCLSOLVER
 
+#include "ow_isolver.h"
 namespace sibernetic {
 namespace solver {
-class i_solver {
+class ocl_solver : public i_solver {
 public:
-  // virtual void interract() = 0;
-  virtual ~i_solver(){};
-  virtual void run_neighbour_search() = 0;
-  virtual void run_physic() = 0;
+  ocl_solver();
+  ~ocl_solver(){};
+  virtual void run_neighbour_search();
+  virtual void run_physic();
 
 private:
-  virtual void init_ext_particles() = 0;
+  virtual void init_ext_particles();
+  void init_ocl();
 };
 }
 }

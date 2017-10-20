@@ -30,3 +30,15 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
+
+#include "ow_oclsolver.h"
+
+using sibernetic::solver::ocl_solver;
+
+ocl_solver::ocl_solver() {}
+
+void ocl_solver::init_ext_particles() {}
+void ocl_solver::run_neighbour_search() {}
+void ocl_solver::run_physic() {}
+
+void init_ocl() {}
