@@ -35,8 +35,8 @@
 #include "ow_oclsolver.h"
 #include <iostream>
 
-using sibernetic::solver::solver_container;
-using sibernetic::solver::SOLVER_TYPE;
+using x_engine::solver::solver_container;
+using x_engine::solver::SOLVER_TYPE;
 
 solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t)
 {

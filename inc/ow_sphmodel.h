@@ -36,9 +36,7 @@
 #include "ow_particle.h"
 #include <memory>
 #include <vector>
-namespace openworm
-{
-namespace sibernetic
+namespace x_engine
 {
 namespace model
 {
@@ -51,7 +49,6 @@ public:
 private:
   container particles;
 };
-}
 }
 }
 #endif // OW_SPHMODEL

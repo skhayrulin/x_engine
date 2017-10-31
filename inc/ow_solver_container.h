@@ -4,7 +4,7 @@
 #include "ow_cl_const.h"
 #include <string>
 #include <vector>
-namespace sibernetic
+namespace x_engine
 {
 namespace solver
 {

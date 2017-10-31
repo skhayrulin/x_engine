@@ -33,7 +33,7 @@
 #ifndef SPH_CONFIG
 #define SPH_CONFIG
 
-namespace sibernetic
+namespace x_engine
 {
 struct sph_config
 {

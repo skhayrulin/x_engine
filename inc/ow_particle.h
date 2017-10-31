@@ -37,12 +37,15 @@
 #include <array>
 #include <sstream>
 
-namespace openworm {
-namespace sibernetic {
-namespace model {
+namespace x_engine
+{
+namespace model
+{
 // TODO write the docs
 // Write why alligment on 16 bytes is important!!
-template <class T, size_t dim = 4> struct alignas(16) particle {
+template <class T, size_t dim = 4>
+struct alignas(16) particle
+{
   typedef std::array<T, dim> container;
   container pos;
   container vel;
@@ -51,14 +54,14 @@ template <class T, size_t dim = 4> struct alignas(16) particle {
   size_t get_dim() const { return dim; }
   T density;
   T pressure;
-  std::string pos_str() {
+  std::string pos_str()
+  {
     std::stringstream s;
     std::for_each(pos.begin(), pos.end(), [&s](T c) { s << c << ' '; });
     s << '\n';
     return s.str();
   }
 };
-}
 }
 }
 

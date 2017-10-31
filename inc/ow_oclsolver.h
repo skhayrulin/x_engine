@@ -45,7 +45,7 @@
 #include "ow_isolver.h"
 #include "ow_cl_const.h"
 #include "ow_solver_container.h"
-namespace sibernetic
+namespace x_engine
 {
 namespace solver
 {

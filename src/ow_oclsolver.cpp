@@ -33,7 +33,7 @@
 
 #include "ow_oclsolver.h"
 
-using sibernetic::solver::ocl_solver;
+using x_engine::solver::ocl_solver;
 ocl_solver::ocl_solver(device &d) {}
 
 void ocl_solver::init_ext_particles() {}
