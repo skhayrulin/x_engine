@@ -35,7 +35,8 @@
 
 #include "ow_cl_const.h"
 
-struct extendet_particle {
+struct extendet_particle
+{
   size_t p_id;
   int neigbour_list[NEIGHBOUR_COUNT];
 };

@@ -38,16 +38,21 @@
 using sibernetic::solver::solver_container;
 using sibernetic::solver::SOLVER_TYPE;
 
-solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t) {
+solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t)
+{
   _solvers.reserve(devices_number);
-  try {
-    for (int i = 0; i < devices_number; ++i) {
+  try
+  {
+    for (int i = 0; i < devices_number; ++i)
+    {
       i_solver *s;
       device d;
-      switch (s_t) {
-      case OCL: {
+      switch (s_t)
+      {
+      case OCL:
+      {
         s = new ocl_solver(d);
-        device.push_back(d);
+        devices.push_back(d);
         _solvers.push_back(s);
         break;
       }
@@ -55,7 +60,9 @@ solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t) {
         break;
       };
     }
-  } catch (std::runtime_error &err) {
+  }
+  catch (std::runtime_error &err)
+  {
     destroy();
     throw;
   }

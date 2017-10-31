@@ -36,11 +36,15 @@
 #include "ow_particle.h"
 #include <memory>
 #include <vector>
-namespace openworm {
-namespace sibernetic {
-namespace model {
+namespace openworm
+{
+namespace sibernetic
+{
+namespace model
+{
 template <class T = float, class container = std::vector<particle<T>>>
-class sph_model {
+class sph_model
+{
 public:
   sph_model(const sph_config &cfg);
 
