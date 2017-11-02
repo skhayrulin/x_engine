@@ -7,13 +7,15 @@ BUILD_DIR := release
 SRC_EXT := cpp
 BINARY_DIR = $(BUILD_DIR)/obj
 
-LIBS := -lOpenCL
 
 OCL_INC  = -I/opt/AMDAPPSDK-3.0/include/
 OCL_LIB  = -L/usr/lib64/OpenCL/vendors/amd/
 
-#MAC FRAMEWORKS
-FRAMEWORKS := -framework OpenCL
+LIBS := -lOpenCL
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+	LIBS := -framework OpenCL
+endif
 
 
 SRC = $(wildcard $(SRC_DIR)/*.$(SRC_EXT))
@@ -28,7 +30,6 @@ all: CXXFLAGS += -O3 -Wall
 
 debug: CXXFLAGS += -ggdb -O0
 debug: $(TARGET)
-
 
 $(TARGET): $(OBJ)
 	@echo 'Building target: $@'
