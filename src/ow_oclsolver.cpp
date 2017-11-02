@@ -34,7 +34,17 @@
 #include "ow_oclsolver.h"
 
 using x_engine::solver::ocl_solver;
-ocl_solver::ocl_solver(device &d) {}
+ocl_solver::ocl_solver(device &d)
+{
+  try
+  {
+    this->initialize_ocl();
+  }
+  catch (ocl_error &ex)
+  {
+    throw;
+  }
+}
 
 void ocl_solver::init_ext_particles() {}
 void ocl_solver::run_neighbour_search() {}
@@ -49,6 +59,6 @@ void initialize_ocl()
       &platformList); // TODO make check that returned value isn't error
   if (platformList.size() < 1 || err != CL_SUCCESS)
   {
-    throw std::runtime_error("No OpenCL platforms found");
+    throw ocl_error("No OpenCL platforms found");
   }
 }
