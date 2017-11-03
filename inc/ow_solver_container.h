@@ -31,19 +31,11 @@ class solver_container
 {
 public:
   solver_container(size_t devices_number = 1, SOLVER_TYPE s_t = OCL);
-  ~solver_container() { destroy(); }
+  ~solver_container() {}
 
 private:
-  void destroy()
-  {
-    for (auto s : _solvers)
-    {
-      delete s;
-    }
-  }
-
-  std::vector<i_solver *> _solvers;
-  std::vector<device> devices;
+  std::vector<std::shared_ptr<i_solver>> _solvers;
+  std::vector<std::shared_ptr<device>> devices;
 };
 }
 }

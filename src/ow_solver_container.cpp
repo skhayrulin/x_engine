@@ -34,24 +34,26 @@
 #include "ow_solver_container.h"
 #include "ow_oclsolver.h"
 #include <iostream>
+#include <memory>
+#include "util/x_error.h"
 
 using x_engine::solver::solver_container;
 using x_engine::solver::SOLVER_TYPE;
 
-solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t)
+solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_type)
 {
   _solvers.reserve(devices_number);
   try
   {
     for (int i = 0; i < devices_number; ++i)
     {
-      i_solver *s;
-      device d;
-      switch (s_t)
+      std::shared_ptr<i_solver> s;
+      std::shared_ptr<device> d(new device{CPU, "", false});
+      switch (s_type)
       {
       case OCL:
       {
-        s = new ocl_solver(d);
+        s = std::make_shared<ocl_solver>(d);
         devices.push_back(d);
         _solvers.push_back(s);
         break;
@@ -61,9 +63,8 @@ solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_t)
       };
     }
   }
-  catch (std::runtime_error &err)
+  catch (ocl_error &err)
   {
-    destroy();
     throw;
   }
 }

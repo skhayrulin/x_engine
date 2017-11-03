@@ -8,7 +8,8 @@
                 "/usr/include/c++/4.2.1",
                 "/usr/local/include",
                 "/usr/include",
-                "${workspaceRoot}/inc"
+                "${workspaceRoot}/inc",
+                "${workspaceRoot}/inc/util"
             ],
             "intelliSenseMode": "clang-x64",
             "browse": {
@@ -19,6 +20,7 @@
                     "/usr/local/include",
                     "/usr/include",
                     "${workspaceRoot}/inc",
+                    "${workspaceRoot}/inc/util",
                     "${workspaceRoot}"
                 ]
             },

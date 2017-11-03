@@ -52,20 +52,21 @@ namespace solver
 class ocl_solver : public i_solver
 {
 public:
-  ocl_solver(device &d);
+  ocl_solver(std::shared_ptr<device>);
   ~ocl_solver(){};
   virtual void run_neighbour_search();
   virtual void run_physic();
 
 private:
   virtual void init_ext_particles();
-  void initialize_ocl();
+  void initialize_ocl(std::shared_ptr<device>);
   cl::Kernel k_init_ext_particles;
   cl::Buffer b_particles;
   cl::Buffer b_ext_particles;
   cl::Context context;
   cl::CommandQueue queue;
   cl::Program program;
+  static const std::string program_name;
 };
 }
 }
