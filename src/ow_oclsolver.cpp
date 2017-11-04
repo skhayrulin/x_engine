@@ -65,14 +65,14 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
   std::vector<cl::Device> devices;
   err = cl::Platform::get(
       &platformList); // TODO make check that returned value isn't error
-  if (platformList.size() < 1 || err != CL_SUCCESS)
+  if (platformList.size() == 0 || err != CL_SUCCESS)
   {
     throw ocl_error("No OpenCL platforms found");
   }
   char _name[1024];
-  cl_platform_id cl_pl_id[10];
+  cl_platform_id cl_pl_id[10]; // TODO make this optional case it could be many platforms
   cl_uint n_pl;
-  clGetPlatformIDs(10, cl_pl_id, &n_pl);
+  clGetPlatformIDs(10, cl_pl_id, &n_pl); // TODO make 10 - number of platforms optional
   for (cl_uint i = 0; i < n_pl; i++)
   {
     // Get OpenCL platform name and version
@@ -84,7 +84,7 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
     }
     else
     {
-      std::cerr << "Error " << err << " in clGetPlatformInfo Call \n\n"
+      std::cerr << "Error " << err << " in clGetPlatformInfo Call"
                 << endl;
     }
   }
@@ -110,8 +110,7 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
   // Selection of more appropriate device
   while (!find_device)
   {
-    for (cl_uint id = 0; id < (int)n_pl;
-         id++)
+    for (cl_uint id = 0; id < n_pl; ++id)
     {
       clGetDeviceIDs(cl_pl_id[id],
                      device_type[dev->type], 0, NULL,
