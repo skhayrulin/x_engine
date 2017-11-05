@@ -103,10 +103,8 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
   cl_uint cl_device_count = 0;
   cl_device_id *devices_t;
   bool b_passed = true, find_device = false;
-  cl_int result;
-  cl_uint device_coumpute_unit_num;
-  cl_uint device_coumpute_unit_num_current = 0;
-  unsigned int deviceNum = 0;
+  cl_int result, device_coumpute_unit_num, device_coumpute_unit_num_current = 0;
+  size_t dev_num = 0;
   // Selection of more appropriate device
   while (!find_device)
   {
@@ -140,7 +138,7 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
                 pl_list = id;
                 device_coumpute_unit_num_current = device_coumpute_unit_num;
                 find_device = true;
-                deviceNum = i;
+                dev_num = i;
               }
             }
           }
@@ -150,7 +148,7 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
     }
     if (!find_device)
     {
-      deviceNum = 0;
+      dev_num = 0;
       std::string deviceTypeName =
           (dev->type == ALL)
               ? "ALL"
@@ -177,65 +175,65 @@ void ocl_solver::initialize_ocl(std::shared_ptr<device> dev)
   }
   // Print some information about chosen platform
   size_t compUnintsCount, memoryInfo, workGroupSize;
-  result = devices[deviceNum].getInfo(CL_DEVICE_NAME,
-                                      &_name); // CL_INVALID_VALUE = -30;
+  result = devices[dev_num].getInfo(CL_DEVICE_NAME,
+                                    &_name); // CL_INVALID_VALUE = -30;
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list << "]: CL_DEVICE_NAME ["
-         << deviceNum << "]:\t" << _name << "\n"
+         << dev_num << "]:\t" << _name << "\n"
          << endl;
   }
   if (strlen(_name) < 1024)
   {
     dev->name = _name;
   }
-  result = devices[deviceNum].getInfo(CL_DEVICE_TYPE, &_name);
+  result = devices[dev_num].getInfo(CL_DEVICE_TYPE, &_name);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list << "]: CL_DEVICE_TYPE ["
-         << deviceNum << "]:\t"
+         << dev_num << "]:\t"
          << ((_name[0] == CL_DEVICE_TYPE_CPU) ? "CPU" : "GPU")
          << endl;
   }
   result =
-      devices[deviceNum].getInfo(CL_DEVICE_MAX_WORK_GROUP_SIZE, &workGroupSize);
+      devices[dev_num].getInfo(CL_DEVICE_MAX_WORK_GROUP_SIZE, &workGroupSize);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list
-         << "]: CL_DEVICE_MAX_WORK_GROUP_SIZE [" << deviceNum << "]: \t"
+         << "]: CL_DEVICE_MAX_WORK_GROUP_SIZE [" << dev_num << "]: \t"
          << workGroupSize << endl;
   }
   result =
-      devices[deviceNum].getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &compUnintsCount);
+      devices[dev_num].getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &compUnintsCount);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list
-         << "]: CL_DEVICE_MAX_COMPUTE_UNITS [" << deviceNum << "]: \t"
+         << "]: CL_DEVICE_MAX_COMPUTE_UNITS [" << dev_num << "]: \t"
          << compUnintsCount << endl;
   }
-  result = devices[deviceNum].getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &memoryInfo);
+  result = devices[dev_num].getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &memoryInfo);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list
-         << "]: CL_DEVICE_GLOBAL_MEM_SIZE [" << deviceNum << "]: \t"
-         << deviceNum << endl;
+         << "]: CL_DEVICE_GLOBAL_MEM_SIZE [" << dev_num << "]: \t"
+         << dev_num << endl;
   }
   result =
-      devices[deviceNum].getInfo(CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, &memoryInfo);
+      devices[dev_num].getInfo(CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, &memoryInfo);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM [" << pl_list
-         << "]: CL_DEVICE_GLOBAL_MEM_CACHE_SIZE [" << deviceNum << "]:\t"
+         << "]: CL_DEVICE_GLOBAL_MEM_CACHE_SIZE [" << dev_num << "]:\t"
          << memoryInfo << endl;
   }
-  result = devices[deviceNum].getInfo(CL_DEVICE_LOCAL_MEM_SIZE, &memoryInfo);
+  result = devices[dev_num].getInfo(CL_DEVICE_LOCAL_MEM_SIZE, &memoryInfo);
   if (result == CL_SUCCESS)
   {
     cout << "CL_CONTEXT_PLATFORM " << pl_list
-         << ": CL_DEVICE_LOCAL_MEM_SIZE [" << deviceNum << "]:\t"
+         << ": CL_DEVICE_LOCAL_MEM_SIZE [" << dev_num << "]:\t"
          << memoryInfo << endl;
   }
-  queue = cl::CommandQueue(context, devices[deviceNum], 0, &err);
+  queue = cl::CommandQueue(context, devices[dev_num], 0, &err);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Failed to create command queue");

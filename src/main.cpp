@@ -30,9 +30,13 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
+#include "ow_solver_container.h"
 #include <iostream>
 
+using x_engine::solver::solver_container;
+
 int main(int argc, char **argv) {
+  solver_container &s_con = solver_container::instance();
   std::cout << "HELLO" << std::endl;
   return 0;
 }
