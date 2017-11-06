@@ -1,6 +1,8 @@
 CXXCOMPILER = g++ -std=c++11
 TARGET := x_engine
+TEST_TARGET := x_test
 RM := rm -rf
+TEST_SRC := test
 SRC_DIR := src
 INC_DIR := inc 
 BUILD_DIR := release
@@ -27,9 +29,11 @@ CXXFLAGS = $(CXXCOMPILER)
 all: $(TARGET)
 all: CXXFLAGS += -O3 -Wall
 
-
 debug: CXXFLAGS += -ggdb -O0
 debug: $(TARGET)
+
+test: CXXFLAGS += -framework boost
+test: $(TARGET)
 
 $(TARGET): $(OBJ)
 	@echo 'Building target: $@'
