@@ -1,8 +1,5 @@
 # X_ENGINE
-I'm planning collect here all my work on rewrote version of Sibernetic engine
-
-# Sibernetic
-About Sibernetic you can reed [here](sibernetic.org)
+I'm planning collect here all my work on rewrote version of engine
 
 # Build
 Just run make in root folder
