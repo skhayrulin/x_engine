@@ -17,6 +17,6 @@ Than run program
 
 Run test just run `make` with key `test` 
 
-	make `test`
+	make test
 
 It actually not working now but in progress
