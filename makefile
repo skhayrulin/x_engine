@@ -1,11 +1,12 @@
-CXXCOMPILER = g++ -std=c++11
+CC = g++ -std=c++11 -Wall
 TARGET := x_engine
 TEST_TARGET := x_test
 RM := rm -rf
-TEST_SRC := test
+TEST := test
 SRC_DIR := src
 INC_DIR := inc 
-BUILD_DIR := release
+BUILD_DIR := bin
+TEST_BIN_DIR := $(TEST)/bin
 SRC_EXT := cpp
 BINARY_DIR = $(BUILD_DIR)/obj
 
@@ -20,37 +21,60 @@ ifeq ($(UNAME_S), Darwin)
 endif
 
 
-SRC = $(wildcard $(SRC_DIR)/*.$(SRC_EXT))
+SRC := $(wildcard $(SRC_DIR)/*.$(SRC_EXT))
+TEST_SRC := $(wildcard $(TEST)/*.$(SRC_EXT))
 
 OBJ := $(patsubst $(SRC_DIR)/%,$(BINARY_DIR)/%,$(SRC:.$(SRC_EXT)=.o))
+TEST_OBJ := $(patsubst $(TEST)/%,$(TEST_BIN_DIR)/%,$(TEST_SRC:.$(SRC_EXT)=.o))
 
-CXXFLAGS = $(CXXCOMPILER)
+CXXFLAGS = $(CC)
 
 all: $(TARGET)
-all: CXXFLAGS += -O3 -Wall
+all: CXXFLAGS += -O3
 
 debug: CXXFLAGS += -ggdb -O0
 debug: $(TARGET)
 
-test: CXXFLAGS += -framework boost
-test: $(TARGET)
+test: SRC := $(shell ls $(SRC_DIR)| grep [^x_engine]\.cpp)
+test: SRC := $(wildcard $(SRC_DIR)/$(SRC))
+test: OBJ := $(patsubst $(SRC_DIR)/%,$(BINARY_DIR)/%,$(SRC:.$(SRC_EXT)=.o))
+test: $(TEST_TARGET)
+
 
 $(TARGET): $(OBJ)
 	@echo 'Building target: $@'
 	$(CXXFLAGS) $(OCL_LIB) -o $(BUILD_DIR)/$(TARGET) $(OBJ) $(LIBS)
 	@echo 'Finished building target: $@'
-	@echo ' '
 
 $(BINARY_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BINARY_DIR)
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	$(CXXFLAGS) $(OCL_INC) -I$(INC_DIR)  -c -o "$@" "$<"
+	$(CXXFLAGS) $(OCL_INC) -I$(INC_DIR) -c -o "$@" "$<"
 	@echo 'Finished building: $<'
-	@echo ' '
+
+$(TEST_BIN_DIR)/%.o: $(TEST)/%.$(SRC_EXT)
+	@mkdir -p $(TEST_BIN_DIR)
+	@echo 'Building file: $<'
+	@echo 'Invoking: GCC C++ Compiler'
+	$(CXXFLAGS) -I$(INC_DIR) -c -o "$@" "$<"
+	@echo 'Finished building: $<'
+
+
+$(TEST_TARGET): $(OBJ) $(TEST_OBJ)
+	@echo ' $(SRC)'
+	@echo ' $(OBJ)'
+	@echo 'Building target: $@'
+	$(CXXFLAGS) $(OCL_LIB) -o $(TEST_BIN_DIR)/$(TEST_TARGET) $(TEST_OBJ) $(OBJ) $(LIBS) -lgtest
+	@echo 'Finished building target: $@'
 
 clean:
+	@echo "Cleaning...";
 	$(RM) $(BUILD_DIR)
+	$(RM) $(TEST_BIN_DIR)
 
-.PHONY: all clean debug mac_os
+radio: 
+	@echo 'Building files: $(CPP_FILES)'
+
+.PHONY: all clean debug mac_os test

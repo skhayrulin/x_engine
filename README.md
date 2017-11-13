@@ -11,7 +11,7 @@ Just run make in root folder
 
 Than run program
 	
-	./release/x_engine
+	./bin/x_engine
 
 # Testing
 
