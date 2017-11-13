@@ -1,7 +1,7 @@
 #ifndef OW_SOLVER_CONTAINER
 #define OW_SOLVER_CONTAINER
-#include "ow_cl_const.h"
-#include "ow_isolver.h"
+#include "ocl_const.h"
+#include "isolver.h"
 #include <string>
 #include <vector>
 namespace x_engine {

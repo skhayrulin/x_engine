@@ -31,15 +31,15 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 
-#include "ow_oclsolver.h"
+#include "ocl_solver.h"
 #include "util/x_error.h"
 #include <iostream>
 #include <fstream>
 
-using x_engine::solver::ocl_solver;
-using x_engine::ocl_error;
 using std::cout;
 using std::endl;
+using x_engine::ocl_error;
+using x_engine::solver::ocl_solver;
 const std::string ocl_solver::program_name("cl_code//sph_cl_code.cl");
 
 ocl_solver::ocl_solver(std::shared_ptr<device> d)

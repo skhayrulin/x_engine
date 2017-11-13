@@ -53,7 +53,7 @@
 	#endif
 #endif
 
-#include "inc/ow_cl_struct.h"
+#include "inc/ocl_struct.h"
 
 typedef struct particle_f{
 	float4 pos;

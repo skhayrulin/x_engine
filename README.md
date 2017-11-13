@@ -6,6 +6,9 @@ Just run make in root folder
 	
 	make
 
+## Dependincies 
+Before run you need install some libraries such as OpenCL - for work with OpenCL. For testing install gtest lib on your machine.
+
 Than run program
 	
 	./bin/x_engine

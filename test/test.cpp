@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include "solver_container.h"
 
 int add(int i, int j){
     return i + j;

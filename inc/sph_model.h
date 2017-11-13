@@ -30,44 +30,26 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_OCLSOLVER
-#define OW_OCLSOLVER
+#ifndef OW_SPHMODEL
+#define OW_SPHMODEL
 
-#if defined(_WIN32) || defined(_WIN64)
-#pragma comment(lib, "opencl.lib") // opencl.lib
-#endif
-
-#if defined(__APPLE__) || defined(__MACOSX)
-#include "OpenCL/cl.hpp"
-#else
-#include <CL/cl.hpp>
-#endif
-#include "ow_isolver.h"
-#include "ow_cl_const.h"
-#include "ow_solver_container.h"
+#include "particle.h"
+#include "sph_config.h"
+#include <memory>
+#include <vector>
 namespace x_engine
 {
-namespace solver
+namespace model
 {
-class ocl_solver : public i_solver
+template <class T = float, class container = std::vector<particle<T>>>
+class sph_model
 {
 public:
-  ocl_solver(std::shared_ptr<device>);
-  ~ocl_solver(){};
-  virtual void run_neighbour_search();
-  virtual void run_physic();
+  sph_model(const sph_config &cfg);
 
 private:
-  virtual void init_ext_particles();
-  void initialize_ocl(std::shared_ptr<device>);
-  cl::Kernel k_init_ext_particles;
-  cl::Buffer b_particles;
-  cl::Buffer b_ext_particles;
-  cl::Context context;
-  cl::CommandQueue queue;
-  cl::Program program;
-  static const std::string program_name;
+  container particles;
 };
 }
 }
-#endif
+#endif // OW_SPHMODEL

@@ -31,14 +31,14 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 
-#include "ow_solver_container.h"
-#include "ow_oclsolver.h"
+#include "solver_container.h"
+#include "ocl_solver.h"
 #include <iostream>
 #include <memory>
 #include "util/x_error.h"
 
-using x_engine::solver::solver_container;
 using x_engine::solver::SOLVER_TYPE;
+using x_engine::solver::solver_container;
 
 solver_container::solver_container(size_t devices_number, SOLVER_TYPE s_type)
 {

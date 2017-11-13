@@ -1,7 +1,7 @@
 /*******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2011, 2017 OpenWorm.
+ * Copyright (c) 2011, 2013 OpenWorm.
  * http://openworm.org
  *
  * All rights reserved. This program and the accompanying materials
@@ -30,25 +30,18 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_SPHMODEL
-#define OW_SPHMODEL
+#ifndef OW_CL_STRUCT
+#define OW_CL_STRUCT
 
-#include "ow_particle.h"
-#include <memory>
-#include <vector>
-namespace x_engine
-{
-namespace model
-{
-template <class T = float, class container = std::vector<particle<T>>>
-class sph_model
-{
-public:
-  sph_model(const sph_config &cfg);
+#include "ocl_const.h"
 
-private:
-  container particles;
+/**Structure for description extended 
+ * class for particle. 
+*/
+struct extendet_particle
+{
+  size_t p_id;
+  int neigbour_list[NEIGHBOUR_COUNT];
 };
-}
-}
-#endif // OW_SPHMODEL
+
+#endif
