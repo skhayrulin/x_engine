@@ -1,8 +1,5 @@
 # X_ENGINE
-I'm planning collect here all my work on rewrote version of Sibernetic engine
-
-# Sibernetic
-About Sibernetic you can reed [here](sibernetic.org)
+I'm planning collect here all my work on rewrote version of engine
 
 # Build
 Just run make in root folder
@@ -17,6 +14,6 @@ Than run program
 
 Run test just run `make` with key `test` 
 
-	make `test`
+	make test
 
 It actually not working now but in progress
