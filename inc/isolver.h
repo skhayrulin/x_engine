@@ -32,11 +32,18 @@
  *******************************************************************************/
 #ifndef OW_ISOLVER
 #define OW_ISOLVER
-
+#include <string>
 namespace x_engine
 {
 namespace solver
 {
+  enum SOLVER_TYPE { OCL = 1, CUDA, SINGLE, PARALLEL };
+enum DEVICE { CPU = 0, GPU = 1, ALL = 2 };
+struct device {
+  DEVICE type;
+  std::string name;
+  bool is_buisy;
+};
 class i_solver
 {
 public:

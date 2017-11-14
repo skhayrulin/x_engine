@@ -2,6 +2,7 @@
 #define OW_SOLVER_CONTAINER
 #include "isolver.h"
 #include "ocl_const.h"
+#include "ocl_solver.hpp"
 #include "sph_model.h"
 #include "util/x_error.h"
 #include <string>
@@ -10,14 +11,8 @@ namespace x_engine {
 namespace solver {
 using std::shared_ptr;
 using model::sph_model;
-enum SOLVER_TYPE { OCL = 1, CUDA, SINGLE, PARALLEL };
-enum DEVICE { CPU = 0, GPU = 1, ALL = 2 };
-struct device {
-  DEVICE type;
-  std::string name;
-  bool is_buisy;
-};
-template <class T> class solver_container {
+using x_engine::solver::ocl_solver;
+template <class T = float> class solver_container {
   typedef shared_ptr<sph_model<T>> model_ptr;
 
 public:
@@ -32,6 +27,7 @@ public:
   }
 
 private:
+  //template<T> class ocl_solver;
   solver_container(model_ptr model, size_t devices_number = 1,
                    SOLVER_TYPE s_type = OCL) {
     _solvers.reserve(devices_number);
@@ -41,7 +37,7 @@ private:
         std::shared_ptr<device> d(new device{CPU, "", false});
         switch (s_type) {
         case OCL: {
-          // s = std::make_shared<ocl_solver>(d);
+          s = std::make_shared<ocl_solver<T>>(model, d);
           devices.push_back(d);
           _solvers.push_back(s);
           break;
