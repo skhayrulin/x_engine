@@ -30,13 +30,14 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#include "solver_container.h"
+#include "solver_container.hpp"
 #include <iostream>
 
 using x_engine::solver::solver_container;
-
+using x_engine::model::sph_model;
 int main(int argc, char **argv) {
-  solver_container &s_con = solver_container::instance();
+  std::shared_ptr<sph_model<float>> model(new sph_model<float>());
+  solver_container<float> &s_con = solver_container<float>::instance(model);
   std::cout << "HELLO" << std::endl;
   return 0;
 }

@@ -44,13 +44,10 @@
 #endif
 #include "isolver.h"
 #include "ocl_const.h"
-#include "solver_container.h"
-namespace x_engine
-{
-namespace solver
-{
-class ocl_solver : public i_solver
-{
+#include "solver_container.hpp"
+namespace x_engine {
+namespace solver {
+class ocl_solver : public i_solver {
 public:
   ocl_solver(std::shared_ptr<device>);
   ~ocl_solver(){};

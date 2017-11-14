@@ -6,7 +6,6 @@
                 "/Library/Developer/CommandLineTools/usr/lib/clang/8.1.0/include/",
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/4.2.1/tr1/",
                 "/usr/include/c++/4.2.1",
-                "/usr/local/boost",
                 "/usr/local/include",
                 "/usr/include",
                 "${workspaceRoot}/inc",

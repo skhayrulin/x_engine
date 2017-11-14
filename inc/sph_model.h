@@ -34,22 +34,16 @@
 #define OW_SPHMODEL
 
 #include "particle.h"
-#include "sph_config.h"
 #include <memory>
 #include <vector>
-namespace x_engine
-{
-namespace model
-{
+namespace x_engine {
+namespace model {
 template <class T = float, class container = std::vector<particle<T>>>
-class sph_model
-{
-  struct sph_config
-  {
-  };
+class sph_model {
+  struct sph_config {};
 
 public:
-  sph_model(const sph_config &cfg);
+  sph_model() {}
 
 private:
   container particles;
