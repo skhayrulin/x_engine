@@ -44,6 +44,10 @@ namespace model
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model
 {
+  struct sph_config
+  {
+  };
+
 public:
   sph_model(const sph_config &cfg);
 
