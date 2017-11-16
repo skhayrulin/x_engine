@@ -47,7 +47,7 @@
 #include "isolver.h"
 #include "ocl_const.h"
 #include "util/x_error.h"
-#include "sph_model.h"
+#include "sph_model.hpp"
 namespace x_engine {
 namespace solver {
 using std::cout;

@@ -3,7 +3,7 @@
 #include "isolver.h"
 #include "ocl_const.h"
 #include "ocl_solver.hpp"
-#include "sph_model.h"
+#include "sph_model.hpp"
 #include "util/x_error.h"
 #include <string>
 #include <vector>
@@ -27,7 +27,6 @@ public:
   }
 
 private:
-  //template<T> class ocl_solver;
   solver_container(model_ptr model, size_t devices_number = 1,
                    SOLVER_TYPE s_type = OCL) {
     _solvers.reserve(devices_number);

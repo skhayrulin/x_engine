@@ -33,20 +33,33 @@
 #ifndef OW_SPHMODEL
 #define OW_SPHMODEL
 
+#include "model_reader.h"
 #include "particle.h"
+#include <map>
 #include <memory>
 #include <vector>
 namespace x_engine {
 namespace model {
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
-  struct sph_config {};
+  struct sph_config {
+    size_t particle_count;
+    size_t box_min_x;
+    size_t box_min_y;
+    size_t box_min_z;
+    size_t box_max_x;
+    size_t box_max_y;
+    size_t box_max_z;
+  };
 
 public:
-  sph_model() {}
+  sph_model(const std::string &config_file) {}
+  const sph_config &get_config() const { return config; }
 
 private:
   container particles;
+  sph_config config;
+  std::map<std::string, T> phys_consts;
 };
 }
 }
