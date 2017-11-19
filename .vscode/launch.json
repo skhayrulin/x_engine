@@ -5,12 +5,8 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/release/x_engine",
-            "args": [
-                "device=gpu",
-                "-f",
-                "worm_on_agar"
-            ],
+            "program": "${workspaceRoot}/bin/x_engine",
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
@@ -47,7 +43,7 @@
             "name": "C++ Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "enter program name, for example ${workspaceRoot}/a.out",
+            "program": "${workspaceRoot}/bin/x_engine",
             "processId": "${command.pickProcess}",
             "linux": {
                 "MIMode": "gdb",

@@ -62,7 +62,7 @@ class sph_model {
   };
 
 public:
-  sph_model(const std::string &config_file) {}
+  sph_model(const std::string &config_file) { read_model(config_file); }
   const sph_config &get_config() const { return config; }
 
 private:
@@ -77,7 +77,7 @@ private:
     if (file.is_open()) {
       while (file.good()) {
         std::string cur_line;
-        getline(std::cin, cur_line);
+        std::getline(file, cur_line);
         if (cur_line.compare("parametrs[") == 0) {
           mode = PARAMS;
           continue;
@@ -96,7 +96,7 @@ private:
           continue;
         }
         if (mode == PARAMS) {
-          std::regex rgx("(\\w+) : (\\d*) .*");
+          std::regex rgx("(\\w+) : (\\d+) .*");
           std::smatch matches;
           if (std::regex_search(cur_line, matches, rgx)) {
             std::cout << "Match found\n";
@@ -110,6 +110,7 @@ private:
         }
       }
     }
+    file.close();
   }
 };
 }
