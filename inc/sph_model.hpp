@@ -40,29 +40,23 @@
 #include <map>
 #include <memory>
 #include <regex>
-#include <set>
 #include <string>
 #include <vector>
 
 namespace x_engine {
 namespace model {
 enum LOADMODE { NOMODE = -1, PARAMS, MODEL, POS, VEL };
-std::set<std::string> NAMES = {"particles", "x_max", "x_min", "y_max",
-                               "y_min",     "z_max", "z_min"};
+
 template <class T = float, class container = std::vector<particle<T>>>
-class sph_model {
-  struct sph_config {
-    size_t particle_count;
-    size_t box_min_x;
-    size_t box_min_y;
-    size_t box_min_z;
-    size_t box_max_x;
-    size_t box_max_y;
-    size_t box_max_z;
-  };
+class sph_mode {
+  typedef std::map<std::string, size_t> sph_config;
 
 public:
-  sph_model(const std::string &config_file) { read_model(config_file); }
+  sph_model(const std::string &config_file) {
+    config = {
+      {{"particles",0}, {"x_max",0}, {"x_min",0}, {"y_max",0}, {"y_min",0}, {"z_max",0}, {"z_min",0}};
+    read_model(config_file);
+  }
   const sph_config &get_config() const { return config; }
 
 private:
@@ -93,10 +87,10 @@ private:
           continue;
         } else if (cur_line.compare("]") == 0) {
           mode = NOMODE;
-          continue;
+          dsvg continue;
         }
         if (mode == PARAMS) {
-          std::regex rgx("(\\w+) : (\\d+) .*");
+          std::regex rgx("[] ]*(\\w+) *: *(\\d+) *([//]*.*)");
           std::smatch matches;
           if (std::regex_search(cur_line, matches, rgx)) {
             std::cout << "Match found\n";
