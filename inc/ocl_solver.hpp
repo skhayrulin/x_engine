@@ -42,12 +42,12 @@
 #else
 #include <CL/cl.hpp>
 #endif
-#include <iostream>
-#include <fstream>
 #include "isolver.h"
 #include "ocl_const.h"
-#include "util/x_error.h"
 #include "sph_model.hpp"
+#include "util/x_error.h"
+#include <fstream>
+#include <iostream>
 namespace x_engine {
 namespace solver {
 using std::cout;
@@ -59,7 +59,7 @@ template <class T = float> class ocl_solver : public i_solver {
   typedef shared_ptr<sph_model<T>> model_ptr;
 
 public:
-  ocl_solver(model_ptr m, shared_ptr<device> d) : model(m) {
+  ocl_solver(model_ptr &m, shared_ptr<device> &d) : model(m) {
     try {
       this->initialize_ocl(d);
     } catch (ocl_error &ex) {
@@ -77,10 +77,10 @@ private:
   cl::Context context;
   cl::CommandQueue queue;
   cl::Program program;
-  const std::string program_name ="cl_code//sph_cl_code.cl";
+  const std::string program_name = "cl_code//sph_cl_code.cl";
   model_ptr model;
   virtual void init_ext_particles() {}
-  void initialize_ocl(shared_ptr<device> dev) {
+  void initialize_ocl(shared_ptr<device> &dev) {
     cl_int err;
     std::vector<cl::Platform> platformList;
     std::vector<cl::Device> devices;
@@ -91,10 +91,11 @@ private:
     }
     char _name[1024];
     cl_platform_id
-    cl_pl_id[10]; // TODO make this optional case it could be many platforms 
+        cl_pl_id[10]; // TODO make this optional case it could be many platforms
     cl_uint n_pl;
-    clGetPlatformIDs(10, cl_pl_id, &n_pl); // TODO make 10 - number of platforms optional
-     for (cl_uint i = 0; i < n_pl; i++) {
+    clGetPlatformIDs(10, cl_pl_id,
+                     &n_pl); // TODO make 10 - number of platforms optional
+    for (cl_uint i = 0; i < n_pl; i++) {
       // Get OpenCL platform name and version
       err = clGetPlatformInfo(cl_pl_id[i], CL_PLATFORM_VERSION, sizeof(_name),
                               _name, NULL);

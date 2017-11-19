@@ -20,14 +20,14 @@ public:
   solver_container &operator=(const solver_container &) = delete;
   /** Classic Maer's singleton
    */
-  static solver_container &instance(model_ptr model, size_t devices_number = 1,
+  static solver_container &instance(model_ptr &model, size_t devices_number = 1,
                                     SOLVER_TYPE s_t = OCL) {
     static solver_container s(model, devices_number, s_t);
     return s;
   }
 
 private:
-  solver_container(model_ptr model, size_t devices_number = 1,
+  solver_container(model_ptr &model, size_t devices_number = 1,
                    SOLVER_TYPE s_type = OCL) {
     _solvers.reserve(devices_number);
     try {
