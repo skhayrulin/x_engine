@@ -36,8 +36,13 @@
 using x_engine::solver::solver_container;
 using x_engine::model::sph_model;
 int main(int argc, char **argv) {
-  std::shared_ptr<sph_model<float>> model(new sph_model<float>("config/demo1"));
-  solver_container<float> &s_con = solver_container<float>::instance(model);
-  std::cout << "HELLO" << std::endl;
+  try {
+    std::shared_ptr<sph_model<float>> model(
+        new sph_model<float>("config/demo1"));
+    solver_container<float> &s_con = solver_container<float>::instance(model);
+    std::cout << "HELLO" << std::endl;
+  } catch (x_engine::parser_error &e) {
+    std::cout << e.what() << std::endl;
+  }
   return 0;
 }
