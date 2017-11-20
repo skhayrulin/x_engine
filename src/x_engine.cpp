@@ -43,6 +43,10 @@ int main(int argc, char **argv) {
     std::cout << "HELLO" << std::endl;
   } catch (x_engine::parser_error &e) {
     std::cout << e.what() << std::endl;
+    return EXIT_FAILURE;
+  } catch (x_engine::ocl_error &e) {
+    std::cout << e.what() << std::endl;
+    return EXIT_FAILURE;
   }
-  return 0;
+  return EXIT_SUCCESS;
 }
