@@ -48,13 +48,13 @@ namespace model {
 enum LOADMODE { NOMODE = -1, PARAMS, MODEL, POS, VEL };
 
 template <class T = float, class container = std::vector<particle<T>>>
-class sph_mode {
+class sph_model {
   typedef std::map<std::string, size_t> sph_config;
 
 public:
   sph_model(const std::string &config_file) {
-    config = {
-      {{"particles",0}, {"x_max",0}, {"x_min",0}, {"y_max",0}, {"y_min",0}, {"z_max",0}, {"z_min",0}};
+    config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
+              {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
   }
   const sph_config &get_config() const { return config; }
@@ -87,7 +87,7 @@ private:
           continue;
         } else if (cur_line.compare("]") == 0) {
           mode = NOMODE;
-          dsvg continue;
+          continue;
         }
         if (mode == PARAMS) {
           std::regex rgx("[] ]*(\\w+) *: *(\\d+) *([//]*.*)");

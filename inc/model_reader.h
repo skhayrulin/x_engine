@@ -17,7 +17,8 @@ static std::set<std::string> NAMES = {"particles", "x_max", "x_min", "y_max",
  * plan B
  */
 template <class T>
-void read_model(sph_model<T> &model, const std::string &model_file) {
+void read_model(sph_model<T> &model,
+                const std::string &model_file) throw(parser_error) {
   std::ifstream file(model_file.c_str(), std::ios_base::binary);
   LOADMODE mode = NOMODE;
   bool is_model_mode = false;
