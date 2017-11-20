@@ -29,8 +29,8 @@ TEST_OBJ := $(patsubst $(TEST)/%,$(TEST_BIN_DIR)/%,$(TEST_SRC:.$(SRC_EXT)=.o))
 
 CXXFLAGS = $(CC)
 
-all: $(TARGET)
 all: CXXFLAGS += -O3
+all: $(TARGET)
 
 debug: CXXFLAGS += -ggdb -O0
 debug: $(TARGET)
