@@ -1,5 +1,6 @@
 #ifndef X_ERROR
 #define X_ERROR
+#include <sstream>
 #include <stdexcept>
 #include <string>
 namespace x_engine {
@@ -19,6 +20,23 @@ public:
 private:
   std::string msg;
 };
+
+template <typename T> std::string make_msg(const std::string &msg, T val) {
+  std::stringstream ss;
+  std::string format_str(msg);
+  ss << " " << val;
+  format_str += ss.str();
+  return format_str;
+}
+template <typename T, typename... Args>
+std::string make_msg(const std::string &msg, T val, Args... args) {
+  std::stringstream ss;
+  std::string format_str(msg);
+  ss << " " << val;
+  format_str += ss.str();
+  format_str = make_msg(format_str, args...);
+  return format_str;
+}
 }
 
 #endif

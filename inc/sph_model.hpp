@@ -90,12 +90,21 @@ private:
           continue;
         }
         if (mode == PARAMS) {
-          std::regex rgx("[] ]*(\\w+) *: *(\\d+) *([//]*.*)");
+          std::regex rgx("[\\t ]*(\\w+) *: *(\\d+) *([//]*.*)");
           std::smatch matches;
           if (std::regex_search(cur_line, matches, rgx)) {
             std::cout << "Match found\n";
             for (size_t i = 0; i < matches.size(); ++i) {
               std::cout << i << ":" << matches[i].str() << "\n";
+            }
+            if (matches.size() > 2) {
+              if (config.find(matches[1]) != config.end()) {
+                config[matches[1]] = static_cast<size_t>(stoi(matches[2]));
+              }
+            } else {
+              
+              throw parser_error(
+                  );
             }
           } else {
             throw parser_error(
