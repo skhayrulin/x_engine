@@ -4,21 +4,13 @@
 #include <stdexcept>
 #include <string>
 namespace x_engine {
-class ocl_error : public std::exception {
+class ocl_error : public std::runtime_error {
 public:
-  ocl_error(const char *msg) : msg(msg) {}
-  virtual const char *what() const throw() { return msg.c_str(); }
-
-private:
-  std::string msg;
+  ocl_error(const std::string &msg) : std::runtime_error(msg) {}
 };
-class parser_error : public std::exception {
+class parser_error : public std::runtime_error {
 public:
-  parser_error(const char *msg) : msg(msg) {}
-  virtual const char *what() const throw() { return msg.c_str(); }
-
-private:
-  std::string msg;
+  parser_error(const std::string &msg) : std::runtime_error(msg) {}
 };
 
 template <typename T> std::string make_msg(const std::string &msg, T val) {

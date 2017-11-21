@@ -101,14 +101,29 @@ private:
               if (config.find(matches[1]) != config.end()) {
                 config[matches[1]] =
                     static_cast<size_t>(stoi(matches[2].str()));
+                continue;
               }
             } else {
-              throw parser_error(x_engine::make_msg(
-                  "Problem with parsing parametrs:", matches[1].str(),
-                  "Please check parametrs"));
+              std::string msg = x_engine::make_msg(
+                  "Problem with parsing parametrs:", matches[0].str(),
+                  "Please check parametrs".);
+              throw parser_error(msg);
             }
           } else {
-            throw parser_error(x_engine::make_msg("Please check parametrs", ));
+            throw parser_error(
+                "Please check parametrs section there are no parametrs.");
+          }
+        }
+        if (is_model_mode) {
+          switch (mode) {
+          case POS: {
+
+            break;
+          }
+          case VEL: {
+            break;
+          }
+          default: { break; }
           }
         }
       }
