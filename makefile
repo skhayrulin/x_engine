@@ -1,4 +1,4 @@
-CC = g++ -std=c++11 -Wall
+CC = g++ -std=c++14 -Wall
 TARGET := x_engine
 TEST_TARGET := x_test
 RM := rm -rf
