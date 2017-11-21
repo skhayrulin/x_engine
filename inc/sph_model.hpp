@@ -99,16 +99,16 @@ private:
             }
             if (matches.size() > 2) {
               if (config.find(matches[1]) != config.end()) {
-                config[matches[1]] = static_cast<size_t>(stoi(matches[2]));
+                config[matches[1]] =
+                    static_cast<size_t>(stoi(matches[2].str()));
               }
             } else {
-              
-              throw parser_error(
-                  );
+              throw parser_error(x_engine::make_msg(
+                  "Problem with parsing parametrs:", matches[1].str(),
+                  "Please check parametrs"));
             }
           } else {
-            throw parser_error(
-                "Problem with parsing parametrs. Please check parametrs");
+            throw parser_error(x_engine::make_msg("Please check parametrs", ));
           }
         }
       }
