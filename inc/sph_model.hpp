@@ -35,6 +35,7 @@
 
 #include "particle.h"
 #include "util/x_error.h"
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -63,7 +64,12 @@ private:
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
-
+  std::shared_ptr<std::array<T, 4>> get_vector(const std::string &line) {
+    std::shared_ptr<std::array<T, 4>> v(new std::array<T, 4>());
+    std::stringstream ss(line);
+    ss >> (*v)[0] >> (*v)[1] >> (*v)[2] >> (*v)[3]; // TODO check here!!!
+    return v;
+  }
   void read_model(const std::string &model_file) {
     std::ifstream file(model_file.c_str(), std::ios_base::binary);
     LOADMODE mode = NOMODE;
@@ -106,7 +112,7 @@ private:
             } else {
               std::string msg = x_engine::make_msg(
                   "Problem with parsing parametrs:", matches[0].str(),
-                  "Please check parametrs".);
+                  "Please check parametrs.");
               throw parser_error(msg);
             }
           } else {
@@ -117,7 +123,9 @@ private:
         if (is_model_mode) {
           switch (mode) {
           case POS: {
-
+            particle<T> p;
+            p.pos = *get_vector(cur_line);
+            particles.push_back(p);
             break;
           }
           case VEL: {
