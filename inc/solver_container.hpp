@@ -4,6 +4,7 @@
 #include "ocl_const.h"
 #include "ocl_solver.hpp"
 #include "sph_model.hpp"
+#include "util/ocl_helper.h"
 #include "util/x_error.h"
 #include <string>
 #include <vector>
@@ -29,29 +30,21 @@ public:
 private:
   solver_container(model_ptr &model, size_t devices_number = 1,
                    SOLVER_TYPE s_type = OCL) {
-    _solvers.reserve(devices_number);
     try {
-      for (int i = 0; i < devices_number; ++i) {
-        std::shared_ptr<i_solver> s;
-        std::shared_ptr<device> d(new device{CPU, "", false});
-        switch (s_type) {
-        case OCL: {
-          s = std::make_shared<ocl_solver<T>>(model, d);
-          devices.push_back(d);
-          _solvers.push_back(s);
-          break;
-        }
-        default:
-          break;
-        };
+      std::priority_queue<std::shared_ptr<device>> dev_q = get_dev_queue();
+      int i = 0;
+      while (!dev_q.empty()) {
+        std::shared_ptr<ocl_solver<T>> solver(
+            new ocl_solver<T>(model, dev_q.top()));
+        dev_q.pop();
+        _solvers.push_back(solver);
       }
-    } catch (ocl_error &err) {
+    } catch (x_engine::ocl_error &err) {
       throw;
     }
   }
   ~solver_container() {}
   std::vector<std::shared_ptr<i_solver>> _solvers;
-  std::vector<std::shared_ptr<device>> devices;
 };
 }
 }

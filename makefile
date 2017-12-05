@@ -22,6 +22,7 @@ endif
 
 
 SRC := $(wildcard $(SRC_DIR)/*.$(SRC_EXT))
+SRC += $(wildcard $(SRC_DIR)/utils/*.$(SRC_EXT))
 TEST_SRC := $(wildcard $(TEST)/*.$(SRC_EXT))
 
 OBJ := $(patsubst $(SRC_DIR)/%,$(BINARY_DIR)/%,$(SRC:.$(SRC_EXT)=.o))
@@ -49,6 +50,7 @@ $(TARGET): $(OBJ)
 $(BINARY_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BINARY_DIR)
+	@mkdir -p $(BINARY_DIR)/utils
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	$(CXXFLAGS) $(OCL_INC) -I$(INC_DIR) -c -o "$@" "$<"
