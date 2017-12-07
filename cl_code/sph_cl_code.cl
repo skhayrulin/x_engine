@@ -63,7 +63,7 @@ typedef struct particle_f{
 	float density;
 	float pressure;
 } particle_f;
-
+#ifdef _DOUBLE_PRECISION
 typedef struct particle_d{
 	double4 pos;
 	double4 vel;
@@ -72,7 +72,7 @@ typedef struct particle_d{
 	double density;
 	double pressure;
 } particle_d;
-
+#endif
 
 __kernel void work_with_struct(__global struct extendet_particle * ext_particles, 
 							   __global struct 
