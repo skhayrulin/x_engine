@@ -25,7 +25,6 @@ size_t get_device_count(const cl::Platform &p) {
 
 void init_cl_devices(std::priority_queue<std::shared_ptr<device>> &q) {
   cl_int err;
-  cl::Context context;
   std::vector<cl::Platform> platform_list;
   err = cl::Platform::get(
       &platform_list); // TODO make check that returned value isn't error
@@ -41,12 +40,8 @@ void init_cl_devices(std::priority_queue<std::shared_ptr<device>> &q) {
                        });
   std::cout << "Use platform" << std::endl;
   show_platform_info(*it);
-  cl_context_properties cprops[3] = {CL_CONTEXT_PLATFORM,
-                                     (cl_context_properties)(*it)(), 0};
-  context = cl::Context(CL_DEVICE_TYPE_ALL, cprops, NULL, NULL, &err);
   std::vector<cl::Device> devices;
-  devices = context.getInfo<CL_CONTEXT_DEVICES>();
-  // std::distance(platform_list, it);
+  it->getDevices(CL_DEVICE_TYPE_ALL, &devices);
   for (size_t i = 0; i < devices.size(); ++i) {
     std::shared_ptr<device> d(new device(devices[i], 0, i));
     q.push(d);
