@@ -30,8 +30,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_OCLSOLVER
-#define OW_OCLSOLVER
+#ifndef X_OCLSOLVER
+#define X_OCLSOLVER
 
 #if defined(_WIN32) || defined(_WIN64)
 #pragma comment(lib, "opencl.lib") // opencl.lib
@@ -72,15 +72,15 @@ public:
   virtual void run_physic() {}
 
 private:
+  model_ptr model;
+  shared_ptr<device> dev;
+  std::string msg = dev->name + '\n';
+  const std::string cl_program_file = "cl_code//sph_cl_code.cl";
   cl::Kernel k_init_ext_particles;
   cl::Buffer b_particles;
   cl::Buffer b_ext_particles;
   cl::CommandQueue queue;
   cl::Program program;
-  shared_ptr<device> dev;
-  std::string msg = dev->name + '\n';
-  const std::string cl_program_file = "cl_code//sph_cl_code.cl";
-  model_ptr model;
   virtual void init_ext_particles() {}
   void initialize_ocl() {
     int err;
@@ -126,4 +126,4 @@ private:
 };
 }
 }
-#endif
+#endif // X_OCLSOLVER

@@ -30,16 +30,15 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_CL_STRUCT
-#define OW_CL_STRUCT
+#ifndef X_CLSTRUCT
+#define X_CLSTRUCT
 
 #include "ocl_const.h"
 
-/**Structure for description extended 
- * class for particle. 
+/**Structure for description extended
+ * class for particle.
 */
-struct extendet_particle
-{
+struct extendet_particle {
   size_t p_id;
   int neigbour_list[NEIGHBOUR_COUNT];
 };

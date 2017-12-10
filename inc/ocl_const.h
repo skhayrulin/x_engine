@@ -30,9 +30,9 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_CL_CONST
-#define OW_CL_CONST
+#ifndef X_CLCONST
+#define X_CLCONST
 
-#define NEIGHBOUR_COUNT \
+#define NEIGHBOUR_COUNT                                                        \
   32 // NUMBER OF PARTICLES ON SPH SMOTHING PHYSYCAL PROPERTIES
 #endif

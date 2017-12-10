@@ -30,8 +30,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_SPHMODEL
-#define OW_SPHMODEL
+#ifndef X_SPHMODEL
+#define X_SPHMODEL
 
 #include "particle.h"
 #include "util/x_error.h"
@@ -57,6 +57,8 @@ public:
     config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
               {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
+    std::cout << "Model was loaded: " << particles.size() << " partticles."
+              << std::endl;
   }
   const sph_config &get_config() const { return config; }
 
@@ -74,6 +76,7 @@ private:
     std::ifstream file(model_file.c_str(), std::ios_base::binary);
     LOADMODE mode = NOMODE;
     bool is_model_mode = false;
+    int index = 0;
     if (file.is_open()) {
       while (file.good()) {
         std::string cur_line;
@@ -99,10 +102,6 @@ private:
           std::regex rgx("[\\t ]*(\\w+) *: *(\\d+) *([//]*.*)");
           std::smatch matches;
           if (std::regex_search(cur_line, matches, rgx)) {
-            std::cout << "Match found\n";
-            for (size_t i = 0; i < matches.size(); ++i) {
-              std::cout << i << ":" << matches[i].str() << "\n";
-            }
             if (matches.size() > 2) {
               if (config.find(matches[1]) != config.end()) {
                 config[matches[1]] =
@@ -129,6 +128,11 @@ private:
             break;
           }
           case VEL: {
+            if (index >= particles.size())
+              throw parser_error(
+                  "Config file problem. Velocitie mode than partiles is.");
+            particles[index].vel = *get_vector(cur_line);
+            ++index;
             break;
           }
           default: { break; }
@@ -141,4 +145,4 @@ private:
 };
 }
 }
-#endif // OW_SPHMODEL
+#endif // X_SPHMODEL

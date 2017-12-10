@@ -30,8 +30,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_PARTICLE
-#define OW_PARTICLE
+#ifndef X_PARTICLE
+#define X_PARTICLE
 
 #include <algorithm>
 #include <array>

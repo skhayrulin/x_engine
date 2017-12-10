@@ -30,8 +30,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#ifndef OW_ISOLVER
-#define OW_ISOLVER
+#ifndef X_ISOLVER
+#define X_ISOLVER
 #include <string>
 
 namespace x_engine {

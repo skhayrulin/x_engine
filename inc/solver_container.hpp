@@ -1,5 +1,5 @@
-#ifndef OW_SOLVER_CONTAINER
-#define OW_SOLVER_CONTAINER
+#ifndef X_SOLVER_CONTAINER
+#define X_SOLVER_CONTAINER
 #include "isolver.h"
 #include "ocl_const.h"
 #include "ocl_solver.hpp"
@@ -32,17 +32,15 @@ private:
                    SOLVER_TYPE s_type = OCL) {
     try {
       std::priority_queue<std::shared_ptr<device>> dev_q = get_dev_queue();
-      int i = 0;
       while (!dev_q.empty()) {
-        try{
-        std::shared_ptr<ocl_solver<T>> solver(
-            new ocl_solver<T>(model, dev_q.top()));
-        _solvers.push_back(solver);
-        }catch(ocl_error & ex){
+        try {
+          std::shared_ptr<ocl_solver<T>> solver(
+              new ocl_solver<T>(model, dev_q.top()));
+          _solvers.push_back(solver);
+        } catch (ocl_error &ex) {
           std::cout << ex.what() << std::endl;
         }
         dev_q.pop();
-        
       }
     } catch (x_engine::ocl_error &err) {
       throw;
@@ -54,4 +52,4 @@ private:
 }
 }
 
-#endif
+#endif // X_SOLVER_CONTAINER

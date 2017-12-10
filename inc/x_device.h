@@ -27,7 +27,7 @@ struct device {
   void show_info() {
     char c_buffer[100];
     cl_int result;
-    int work_group_size, comp_unints_count, memory_info;
+    int work_group_size, comp_unints_count;
     // Print some information about chosen platform
     result = dev.getInfo(CL_DEVICE_NAME, &c_buffer); // CL_INVALID_VALUE = -30;
     if (result == CL_SUCCESS) {

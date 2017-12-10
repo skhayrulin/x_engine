@@ -1,5 +1,5 @@
-#ifndef OCL_HELPER
-#define OCL_HELPER
+#ifndef X_OCLHELPER
+#define X_OCLHELPER
 #include "x_device.h"
 #include <memory>
 #include <queue>
@@ -10,4 +10,4 @@
 #include <CL/cl.hpp>
 #endif
 std::priority_queue<std::shared_ptr<device>> get_dev_queue();
-#endif // OCL_HELPER
+#endif // X_OCLHELPER
