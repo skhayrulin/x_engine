@@ -78,6 +78,7 @@ private:
   cl::CommandQueue queue;
   cl::Program program;
   shared_ptr<device> dev;
+  std::string msg = dev->name + '\n';
   const std::string cl_program_file = "cl_code//sph_cl_code.cl";
   model_ptr model;
   virtual void init_ext_particles() {}
@@ -85,12 +86,13 @@ private:
     int err;
     queue = cl::CommandQueue(dev->context, dev->dev, 0, &err);
     if (err != CL_SUCCESS) {
-      throw std::runtime_error("Failed to create command queue");
+      throw ocl_error(msg + "Failed to create command queue");
     }
     std::ifstream file(cl_program_file);
     if (!file.is_open()) {
-      throw std::runtime_error("Could not open file with OpenCL program check "
-                               "input arguments oclsourcepath: ./test.cl");
+      throw ocl_error(msg + "Could not open file with OpenCL program check "
+                            "input arguments oclsourcepath: " +
+                      cl_program_file);
     }
     std::string programSource(std::istreambuf_iterator<char>(file),
                               (std::istreambuf_iterator<char>()));
@@ -112,11 +114,11 @@ private:
     if (err != CL_SUCCESS) {
       std::string compilationErrors;
       compilationErrors = program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(dev->dev);
-      std::cerr << "Compilation failed: " << std::endl
-                << compilationErrors << std::endl;
-      throw std::runtime_error("failed to build program");
+      msg += make_msg(msg, "Compilation failed: ", compilationErrors);
+      throw ocl_error(msg);
     }
     std::cout
+        << msg
         << "OPENCL program was successfully build. Program file oclsourcepath: "
         << cl_program_file << std::endl;
     return;
