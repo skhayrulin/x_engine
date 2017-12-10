@@ -81,6 +81,12 @@ private:
       while (file.good()) {
         std::string cur_line;
         std::getline(file, cur_line);
+        if (mode == NOMODE) {
+          cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), ' '),
+                         cur_line.end());
+          cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), '\t'),
+                         cur_line.end());
+        }
         if (cur_line.compare("parametrs[") == 0) {
           mode = PARAMS;
           continue;
@@ -130,7 +136,7 @@ private:
           case VEL: {
             if (index >= particles.size())
               throw parser_error(
-                  "Config file problem. Velocitie mode than partiles is.");
+                  "Config file problem. Velocities more than partiles is.");
             particles[index].vel = *get_vector(cur_line);
             ++index;
             break;
