@@ -81,12 +81,14 @@ private:
       while (file.good()) {
         std::string cur_line;
         std::getline(file, cur_line);
-        if (mode == NOMODE) {
-          cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), ' '),
-                         cur_line.end());
-          cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), '\t'),
-                         cur_line.end());
-        }
+        auto i_space = cur_line.find_first_not_of(" ");
+        auto i_tab = cur_line.find_first_not_of("\t");
+        cur_line.erase(
+            std::remove(cur_line.begin(), cur_line.begin() + i_space, ' '),
+            cur_line.end());
+        cur_line.erase(
+            std::remove(cur_line.begin(), cur_line.end() + i_tab, '\t'),
+            cur_line.end());
         if (cur_line.compare("parametrs[") == 0) {
           mode = PARAMS;
           continue;
