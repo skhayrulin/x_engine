@@ -56,6 +56,7 @@ using std::endl;
 using std::shared_ptr;
 using x_engine::ocl_error;
 using x_engine::model::sph_model;
+
 template <class T = float> class ocl_solver : public i_solver {
   typedef shared_ptr<sph_model<T>> model_ptr;
 
@@ -67,7 +68,11 @@ public:
       throw;
     }
   }
-  ~ocl_solver(){};
+  virtual void init_model(limits &l) {
+    init_buffers();
+    init_kernels();
+  }
+  ~ocl_solver() {}
   virtual void run_neighbour_search() {}
   virtual void run_physic() {}
 
@@ -81,6 +86,8 @@ private:
   cl::Buffer b_ext_particles;
   cl::CommandQueue queue;
   cl::Program program;
+  void init_buffers() {}
+  void init_kernels() {}
   virtual void init_ext_particles() {}
   void initialize_ocl() {
     int err;

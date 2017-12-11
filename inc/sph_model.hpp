@@ -83,12 +83,12 @@ private:
         std::getline(file, cur_line);
         auto i_space = cur_line.find_first_not_of(" ");
         auto i_tab = cur_line.find_first_not_of("\t");
-        cur_line.erase(
-            std::remove(cur_line.begin(), cur_line.begin() + i_space, ' '),
-            cur_line.end());
-        cur_line.erase(
-            std::remove(cur_line.begin(), cur_line.end() + i_tab, '\t'),
-            cur_line.end());
+        if (i_space) {
+          cur_line.erase(cur_line.begin(), cur_line.begin() + i_space);
+        }
+        if (i_tab) {
+          cur_line.erase(cur_line.begin(), cur_line.begin() + i_tab);
+        }
         if (cur_line.compare("parametrs[") == 0) {
           mode = PARAMS;
           continue;

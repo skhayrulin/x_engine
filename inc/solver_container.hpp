@@ -12,6 +12,7 @@ namespace x_engine {
 namespace solver {
 using std::shared_ptr;
 using model::sph_model;
+using x_engine::solver::limits;
 using x_engine::solver::ocl_solver;
 template <class T = float> class solver_container {
   typedef shared_ptr<sph_model<T>> model_ptr;
@@ -41,6 +42,10 @@ private:
           std::cout << ex.what() << std::endl;
         }
         dev_q.pop();
+      }
+      for (auto s : _solvers) {
+        limits l;
+        s->init_model(l);
       }
     } catch (x_engine::ocl_error &err) {
       throw;

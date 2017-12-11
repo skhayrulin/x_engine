@@ -86,7 +86,9 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 #ifdef PRINTF_ON
 	if(id == 0){
 		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
+		#ifdef _DOUBLE_PRECISION
 		printf("sizeof() of particles_d is %d\n", sizeof(particle_d) );
+		#endif
 	}
 #endif
 #ifdef _DOUBLE_PRECISION

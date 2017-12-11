@@ -61,6 +61,8 @@ private:
     char c_buffer[100];
     cl_int result;
     result = dev.getInfo(CL_DEVICE_NAME, &c_buffer);
+    if (result != CL_SUCCESS) {
+    }
     name = c_buffer;
     result = dev.getInfo(CL_DEVICE_TYPE, &c_buffer);
     t = ((int)c_buffer[0] == CL_DEVICE_TYPE_CPU) ? CPU : GPU;
