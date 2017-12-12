@@ -44,6 +44,8 @@
 #endif
 #include "isolver.h"
 #include "ocl_const.h"
+#include "ocl_struct.h"
+#include "particle.h"
 #include "sph_model.hpp"
 #include "util/x_error.h"
 #include "x_device.h"
@@ -56,6 +58,7 @@ using std::endl;
 using std::shared_ptr;
 using x_engine::ocl_error;
 using x_engine::model::sph_model;
+using x_engine::model::particle;
 
 template <class T = float> class ocl_solver : public i_solver {
   typedef shared_ptr<sph_model<T>> model_ptr;
@@ -86,7 +89,12 @@ private:
   cl::Buffer b_ext_particles;
   cl::CommandQueue queue;
   cl::Program program;
-  void init_buffers() {}
+  void init_buffers() {
+    create_ocl_buffer("particles", b_particles, CL_MEM_READ_WRITE,
+                      model->size() * sizeof(particle<T>));
+    create_ocl_buffer("ext_particles", b_ext_particles, CL_MEM_READ_WRITE,
+                      model->size() * sizeof(extendet_particle));
+  }
   void init_kernels() {}
   virtual void init_ext_particles() {}
   void initialize_ocl() {
@@ -129,6 +137,25 @@ private:
         << "OPENCL program was successfully build. Program file oclsourcepath: "
         << cl_program_file << std::endl;
     return;
+  }
+  void create_ocl_buffer(const char *name, cl::Buffer &b,
+                         const cl_mem_flags flags, const int size) {
+    int err;
+    b = cl::Buffer(dev->context, flags, size, NULL, &err);
+    if (err != CL_SUCCESS) {
+      std::string error_m = "Buffer creation failed: ";
+      error_m.append(name);
+      throw ocl_error(error_m);
+    }
+  }
+  void create_ocl_kernel(const char *name, cl::Kernel &k) {
+    int err;
+    k = cl::Kernel(program, name, &err);
+    if (err != CL_SUCCESS) {
+      std::string error_m = "Kernel creation failed: ";
+      error_m.append(name);
+      throw ocl_error(error_m);
+    }
   }
 };
 }

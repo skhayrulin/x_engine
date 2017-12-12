@@ -57,10 +57,13 @@ public:
     config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
               {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
-    std::cout << "Model was loaded: " << particles.size() << " partticles."
+    std::cout << "Model was loaded: " << particles.size() << " particles."
               << std::endl;
   }
   const sph_config &get_config() const { return config; }
+  const container &get_particles() const { return particles; }
+  container &set_particles() { return particles; }
+  int size() const { return particles.size(); }
 
 private:
   container particles;
