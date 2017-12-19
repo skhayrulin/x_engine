@@ -47,7 +47,11 @@
 namespace x_engine {
 namespace model {
 enum LOADMODE { NOMODE = -1, PARAMS, MODEL, POS, VEL };
-
+static const float H = 3.41f;
+static const float H_INV = 1.f / H;
+static const float GRID_CELL_SIZE = 2.0f * H;
+static const float R_0 = 0.5f * H;
+/* const block end */
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
   typedef std::map<std::string, size_t> sph_config;
@@ -57,6 +61,7 @@ public:
     config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
               {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
+    init_vars();
     std::cout << "Model was loaded: " << particles.size() << " particles."
               << std::endl;
   }
@@ -66,15 +71,34 @@ public:
   int size() const { return particles.size(); }
 
 private:
+  int cell_num_x;
+  int cell_num_y;
+  int cell_num_z;
+  long total_cell_num;
+  /* vars block  end */
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
+  /** Init variables for simulation
+  */
+  void init_vars() {
+    cell_num_x =
+        static_cast<int>((config["x_max"] - config["x_min"]) / GRID_CELL_SIZE);
+    cell_num_y =
+        static_cast<int>((config["y_max"] - config["y_min"]) / GRID_CELL_SIZE);
+    cell_num_z =
+        static_cast<int>((config["y_max"] - config["y_min"]) / GRID_CELL_SIZE);
+    total_cell_num = cell_num_x * cell_num_y * cell_num_z;
+  }
   std::shared_ptr<std::array<T, 4>> get_vector(const std::string &line) {
     std::shared_ptr<std::array<T, 4>> v(new std::array<T, 4>());
     std::stringstream ss(line);
     ss >> (*v)[0] >> (*v)[1] >> (*v)[2] >> (*v)[3]; // TODO check here!!!
     return v;
   }
+  /**Model reader
+   * Read the model from file and load in memory
+  */
   void read_model(const std::string &model_file) {
     std::ifstream file(model_file.c_str(), std::ios_base::binary);
     LOADMODE mode = NOMODE;
@@ -150,6 +174,10 @@ private:
           }
         }
       }
+    } else {
+      throw parser_error(
+          "Check your file name or path there is no file with name " +
+          model_file);
     }
     file.close();
   }

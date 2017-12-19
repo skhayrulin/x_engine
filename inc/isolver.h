@@ -37,10 +37,16 @@
 namespace x_engine {
 namespace solver {
 enum SOLVER_TYPE { OCL = 1, CUDA, SINGLE, PARALLEL };
-struct limits {};
+struct limits {
+  /** Devide space on several parts
+   * in each parts whould contains
+   * equal numbers of particles. Move plane 
+  */
+  void buid_devision(int num_of_solvers) {}
+};
 class i_solver {
 public:
-  // virtual void interract() = 0;
+  // virtual void synk() = 0;
   virtual ~i_solver(){};
   virtual void run_neighbour_search() = 0;
   virtual void run_physic() = 0;
