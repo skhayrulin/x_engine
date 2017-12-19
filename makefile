@@ -1,4 +1,4 @@
-CC = g++ -std=c++14 -Wall
+CC = g++ -std=c++14 -Wall -pedantic
 TARGET := x_engine
 TEST_TARGET := x_test
 RM := rm -rf
