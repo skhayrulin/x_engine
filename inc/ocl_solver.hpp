@@ -59,6 +59,10 @@ using std::shared_ptr;
 using x_engine::ocl_error;
 using x_engine::model::sph_model;
 using x_engine::model::particle;
+// OCL constans block
+#define QUEUE_EACH_KERNEL 1
+
+const int LOCAL_NDRANGE_SIZE = 256;
 
 template <class T = float> class ocl_solver : public i_solver {
   typedef shared_ptr<sph_model<T>> model_ptr;

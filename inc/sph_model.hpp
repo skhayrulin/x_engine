@@ -42,15 +42,14 @@
 #include <memory>
 #include <regex>
 #include <string>
-#include <vector>
-
 namespace x_engine {
 namespace model {
 enum LOADMODE { NOMODE = -1, PARAMS, MODEL, POS, VEL };
-static const float H = 3.41f;
-static const float H_INV = 1.f / H;
-static const float GRID_CELL_SIZE = 2.0f * H;
-static const float R_0 = 0.5f * H;
+const float H = 3.34f;
+const float H_INV = 1.f / H;
+const float GRID_CELL_SIZE = 2.0f * H;
+const float GRID_CELL_SIZE_INV = 1 / GRID_CELL_SIZE;
+const float R_0 = 0.5f * H;
 /* const block end */
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
@@ -61,7 +60,6 @@ public:
     config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
               {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
-    init_vars();
     std::cout << "Model was loaded: " << particles.size() << " particles."
               << std::endl;
   }
@@ -122,6 +120,7 @@ private:
         } else if (cur_line.compare("model[") == 0) {
           mode = MODEL;
           is_model_mode = true;
+          init_vars();
           continue;
         } else if (cur_line.compare("position[") == 0) {
           mode = POS;
@@ -159,6 +158,7 @@ private:
           case POS: {
             particle<T> p;
             p.pos = *get_vector(cur_line);
+            calc_grid_id(p);
             particles.push_back(p);
             break;
           }
@@ -180,6 +180,27 @@ private:
           model_file);
     }
     file.close();
+  }
+  /**Arrange particles according its cell id
+   * it will ned for future clustering
+   * particles array on several devices.
+   */
+  void arrage_aprticles() {
+    std::sort(particles.begin(), particles.end(),
+              [](const particle<T> &p1, const particle<T> &p2) {
+                return p1.cell_id < p2.cell_id;
+              });
+  }
+
+  // Addition methods
+  /** TODO Description here
+  */
+  void calc_grid_id(particle<T> &p) {
+    int A, B, C;
+    A = static_cast<int>(p.pos[0] * GRID_CELL_SIZE_INV);
+    B = static_cast<int>(p.pos[1] * GRID_CELL_SIZE_INV);
+    C = static_cast<int>(p.pos[2] * GRID_CELL_SIZE_INV);
+    p.cell_id = A + B * cell_num_x + cell_num_x * cell_num_y * C; //
   }
 };
 }
