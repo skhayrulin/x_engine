@@ -77,6 +77,7 @@ private:
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
+  std::vector<int> limits;
   /** Init variables for simulation
   */
   void init_vars() {
@@ -85,7 +86,7 @@ private:
     cell_num_y =
         static_cast<int>((config["y_max"] - config["y_min"]) / GRID_CELL_SIZE);
     cell_num_z =
-        static_cast<int>((config["y_max"] - config["y_min"]) / GRID_CELL_SIZE);
+        static_cast<int>((config["z_max"] - config["z_min"]) / GRID_CELL_SIZE);
     total_cell_num = cell_num_x * cell_num_y * cell_num_z;
   }
   std::shared_ptr<std::array<T, 4>> get_vector(const std::string &line) {
@@ -182,7 +183,7 @@ private:
     file.close();
   }
   /**Arrange particles according its cell id
-   * it will ned for future clustering
+   * it will need for future clustering
    * particles array on several devices.
    */
   void arrage_aprticles() {
@@ -192,6 +193,7 @@ private:
               });
   }
 
+  void gen_partition(size_t dev_count) {}
   // Addition methods
   /** TODO Description here
   */
