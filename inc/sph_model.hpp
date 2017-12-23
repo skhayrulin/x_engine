@@ -51,6 +51,10 @@ const float GRID_CELL_SIZE = 2.0f * H;
 const float GRID_CELL_SIZE_INV = 1 / GRID_CELL_SIZE;
 const float R_0 = 0.5f * H;
 /* const block end */
+struct partition {
+  size_t start;
+  size_t end;
+};
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
   typedef std::map<std::string, size_t> sph_config;
@@ -77,7 +81,7 @@ private:
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
-  std::vector<int> limits;
+  std::vector<partition> partitions;
   /** Init variables for simulation
   */
   void init_vars() {
@@ -192,8 +196,32 @@ private:
                 return p1.cell_id < p2.cell_id;
               });
   }
-
-  void gen_partition(size_t dev_count) {}
+  /** Make partition for
+  */
+  void gen_partition(size_t dev_count) {
+    std::vector<partition> partitions;
+    if (dev_count == 1) {
+      partitions.push_back(partition{0, size()});
+    }
+    size_t part_size = static_cast<size_t>(size() / dev_count);
+    size_t start = 0 * part_size;
+    size_t end = 1 * part_size;
+    for (size_t i = 0; i < dev_count; ++i) {
+      if (particles[end].cell_id != particles[end + 1]) {
+        partitions.push_back(partition{start, end});
+        start = end;
+      } else {
+        for (; end < size() - 1; ++end) {
+          if (particles[end].cell_id != particles[end + 1].cell_id) {
+            ++end;
+            break;
+          }
+        }
+        partitions.push_back(partition{start, end});
+        start = end;
+      }
+    }
+  }
   // Addition methods
   /** TODO Description here
   */
