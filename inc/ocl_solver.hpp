@@ -59,6 +59,7 @@ using std::shared_ptr;
 using x_engine::ocl_error;
 using x_engine::model::sph_model;
 using x_engine::model::particle;
+using x_engine::model::partition;
 // OCL constans block
 #define QUEUE_EACH_KERNEL 1
 
@@ -75,7 +76,8 @@ public:
       throw;
     }
   }
-  virtual void init_model(limits &l) {
+  virtual void init_model(const partition &p) {
+    this->p = p;
     init_buffers();
     init_kernels();
   }
@@ -85,6 +87,7 @@ public:
 
 private:
   model_ptr model;
+  partition p;
   shared_ptr<device> dev;
   std::string msg = dev->name + '\n';
   const std::string cl_program_file = "cl_code//sph_cl_code.cl";

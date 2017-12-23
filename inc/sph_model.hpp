@@ -54,6 +54,7 @@ const float R_0 = 0.5f * H;
 struct partition {
   size_t start;
   size_t end;
+  size_t size() { return end - start; }
 };
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
@@ -71,8 +72,44 @@ public:
   const container &get_particles() const { return particles; }
   container &set_particles() { return particles; }
   int size() const { return particles.size(); }
+  /** Make partition for
+    */
+  void make_partition(size_t dev_count) {
+    next_partition = 0;
+    std::vector<partition> partitions;
+    if (dev_count == 1) {
+      partitions.push_back(partition{0, size()});
+    }
+    size_t part_size = static_cast<size_t>(size() / dev_count);
+    size_t start = 0 * part_size;
+    size_t end = 1 * part_size;
+    for (size_t i = 0; i < dev_count; ++i) {
+      if (i == dev_count - 1)
+        partitions.push_back(partition{start, size() - 1});
+      else {
+        if (particles[end].cell_id != particles[end + 1].cell_id) {
+          partitions.push_back(partition{start, end});
+          start = end;
+        } else {
+          for (; end < particles.size() - 1; ++end) {
+            if (particles[end].cell_id != particles[end + 1].cell_id) {
+              ++end;
+              break;
+            }
+          }
+          partitions.push_back(partition{start, end});
+          start = end;
+        }
+      }
+    }
+  }
+  const partition &get_next_partition() {
+    ++next_partition;
+    return partitions[next_partition - 1];
+  }
 
 private:
+  size_t next_partition;
   int cell_num_x;
   int cell_num_y;
   int cell_num_z;
@@ -196,32 +233,7 @@ private:
                 return p1.cell_id < p2.cell_id;
               });
   }
-  /** Make partition for
-  */
-  void gen_partition(size_t dev_count) {
-    std::vector<partition> partitions;
-    if (dev_count == 1) {
-      partitions.push_back(partition{0, size()});
-    }
-    size_t part_size = static_cast<size_t>(size() / dev_count);
-    size_t start = 0 * part_size;
-    size_t end = 1 * part_size;
-    for (size_t i = 0; i < dev_count; ++i) {
-      if (particles[end].cell_id != particles[end + 1]) {
-        partitions.push_back(partition{start, end});
-        start = end;
-      } else {
-        for (; end < size() - 1; ++end) {
-          if (particles[end].cell_id != particles[end + 1].cell_id) {
-            ++end;
-            break;
-          }
-        }
-        partitions.push_back(partition{start, end});
-        start = end;
-      }
-    }
-  }
+
   // Addition methods
   /** TODO Description here
   */

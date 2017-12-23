@@ -32,25 +32,19 @@
  *******************************************************************************/
 #ifndef X_ISOLVER
 #define X_ISOLVER
+#include "sph_model.hpp"
 #include <string>
-
 namespace x_engine {
 namespace solver {
 enum SOLVER_TYPE { OCL = 1, CUDA, SINGLE, PARALLEL };
-struct limits {
-  /** Devide space on several parts
-   * in each parts whould contains
-   * equal numbers of particles. Move plane 
-  */
-  void buid_devision(int num_of_solvers) {}
-};
+using x_engine::model::partition;
 class i_solver {
 public:
   // virtual void synk() = 0;
   virtual ~i_solver(){};
   virtual void run_neighbour_search() = 0;
   virtual void run_physic() = 0;
-  virtual void init_model(limits &) = 0;
+  virtual void init_model(const partition &) = 0;
 
 private:
   virtual void init_ext_particles() = 0;

@@ -12,7 +12,6 @@ namespace x_engine {
 namespace solver {
 using std::shared_ptr;
 using model::sph_model;
-using x_engine::solver::limits;
 using x_engine::solver::ocl_solver;
 template <class T = float> class solver_container {
   typedef shared_ptr<sph_model<T>> model_ptr;
@@ -43,9 +42,13 @@ private:
         }
         dev_q.pop();
       }
+      model->make_partition(
+          _solvers.size()); // TODO to whink about is in future we
+                            // cann'not init one or more
+                            // devices
+                            // obvious we sould reinit partitions case ...
       for (auto s : _solvers) {
-        limits l;
-        s->init_model(l);
+        s->init_model(model->get_next_partition());
       }
     } catch (x_engine::ocl_error &err) {
       throw;
