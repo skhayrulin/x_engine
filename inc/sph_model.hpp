@@ -79,14 +79,14 @@ public:
     next_partition = 0;
     std::vector<partition> partitions;
     if (dev_count == 1) {
-      partitions.push_back(partition{0, size()});
+      partitions.push_back(partition{0, static_cast<size_t>(size())});
     }
     size_t part_size = static_cast<size_t>(size() / dev_count);
     size_t start = 0 * part_size;
     size_t end = 1 * part_size;
     for (size_t i = 0; i < dev_count; ++i) {
       if (i == dev_count - 1)
-        partitions.push_back(partition{start, size() - 1});
+        partitions.push_back(partition{start, static_cast<size_t>(size() - 1)});
       else {
         if (particles[end].cell_id != particles[end + 1].cell_id) {
           partitions.push_back(partition{start, end});
