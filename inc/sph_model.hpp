@@ -65,6 +65,7 @@ public:
     config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
               {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
     read_model(config_file);
+    arrange_particles();
     std::cout << "Model was loaded: " << particles.size() << " particles."
               << std::endl;
   }
@@ -227,7 +228,7 @@ private:
    * it will need for future clustering
    * particles array on several devices.
    */
-  void arrage_aprticles() {
+  void arrange_particles() {
     std::sort(particles.begin(), particles.end(),
               [](const particle<T> &p1, const particle<T> &p2) {
                 return p1.cell_id < p2.cell_id;
