@@ -1,17 +1,18 @@
 """ Simple configuration generator
 """
 
+
 def gen(start, end, step):
     ret = start
     while ret < end:
         yield ret
         ret += step
+
+
 def gen_model():
     particle_count = 0
     h = 3.34
     r0 = h * 0.5
-    offset_x = r0
-    step = r0
     out_file = open("tmp", "w")
     out_file.write("model[\n")
     out_file.write("\tposition[\n")
@@ -29,8 +30,10 @@ def gen_model():
     out_file.close()
     print(particle_count, "particles generated")
 
+
 def main():
     gen_model()
+
 
 if __name__ == '__main__':
     main()

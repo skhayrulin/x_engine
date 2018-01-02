@@ -73,8 +73,8 @@ public:
   const container &get_particles() const { return particles; }
   container &set_particles() { return particles; }
   int size() const { return particles.size(); }
-  /** Make partition for
-    */
+  /** Make partition for device
+  */
   void make_partition(size_t dev_count) {
     next_partition = 0;
     std::vector<partition> partitions;
@@ -115,7 +115,7 @@ private:
   int cell_num_y;
   int cell_num_z;
   long total_cell_num;
-  /* vars block  end */
+  // vars block end
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
@@ -138,7 +138,7 @@ private:
     return v;
   }
   /**Model reader
-   * Read the model from file and load in memory
+   * Read the model from file and load into memory
   */
   void read_model(const std::string &model_file) {
     std::ifstream file(model_file.c_str(), std::ios_base::binary);
