@@ -119,7 +119,9 @@ private:
     std::string programSource(std::istreambuf_iterator<char>(file),
                               (std::istreambuf_iterator<char>()));
     if (0) {
-      programSource = "#define _DOUBLE_PRECISSION\n" + programSource;
+      programSource =
+          "#define _DOUBLE_PRECISSION\n" +
+          programSource; // not now it needs double extension check on device
     }
     cl::Program::Sources source(
         1, std::make_pair(programSource.c_str(), programSource.length() + 1));

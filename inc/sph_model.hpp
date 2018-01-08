@@ -58,12 +58,14 @@ struct partition {
 };
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {
-  typedef std::map<std::string, size_t> sph_config;
+  typedef std::map<std::string, T> sph_config;
 
 public:
   sph_model(const std::string &config_file) {
-    config = {{"particles", 0}, {"x_max", 0}, {"x_min", 0}, {"y_max", 0},
-              {"y_min", 0},     {"z_max", 0}, {"z_min", 0}};
+    config = {{"particles", T()}, {"x_max", T()}, {"x_min", T()},
+              {"y_max", T()},     {"y_min", T()}, {"z_max", T()},
+              {"z_min", T()},     {"mass", T()},  {"time_step", T()},
+              {"rho0", T()}};
     read_model(config_file);
     arrange_particles();
     std::cout << "Model was loaded: " << particles.size() << " particles."
@@ -77,9 +79,9 @@ public:
   */
   void make_partition(size_t dev_count) {
     next_partition = 0;
-    std::vector<partition> partitions;
     if (dev_count == 1) {
       partitions.push_back(partition{0, static_cast<size_t>(size())});
+      return;
     }
     size_t part_size = static_cast<size_t>(size() / dev_count);
     size_t start = 0 * part_size;
@@ -111,11 +113,12 @@ public:
 
 private:
   size_t next_partition;
+  // vars block end
   int cell_num_x;
   int cell_num_y;
   int cell_num_z;
   long total_cell_num;
-  // vars block end
+
   container particles;
   sph_config config;
   std::map<std::string, T> phys_consts;
@@ -176,13 +179,13 @@ private:
           continue;
         }
         if (mode == PARAMS) {
-          std::regex rgx("[\\t ]*(\\w+) *: *(\\d+) *([//]*.*)");
+          std::regex rgx("^\\s*(\\w+)\\s*:\\s*(\\d+(\\.\\d*([eE]?[+-]?\\d+)?)?)"
+                         "\\s*(//.*)?$");
           std::smatch matches;
           if (std::regex_search(cur_line, matches, rgx)) {
             if (matches.size() > 2) {
               if (config.find(matches[1]) != config.end()) {
-                config[matches[1]] =
-                    static_cast<size_t>(stoi(matches[2].str()));
+                config[matches[1]] = static_cast<T>(stod(matches[2].str()));
                 continue;
               }
             } else {

@@ -41,6 +41,8 @@ namespace x_engine {
 namespace model {
 // TODO write the docs
 // Write why alligment on 16 bytes is important!!
+// Also in this structure we store all enought information for particle which we
+// want to load from device it should be as small as possible for optimal
 template <class T, size_t dim = 4> struct alignas(16) particle {
   typedef std::array<T, dim> container;
   container pos;

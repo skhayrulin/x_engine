@@ -34,10 +34,8 @@
 #define X_CLSTRUCT
 
 #include "ocl_const.h"
-
-/**Structure for description extended
- * class for particle.
-*/
+// Structure for description extended class for particle.
+//
 struct extendet_particle {
   size_t p_id;
   int neigbour_list[NEIGHBOUR_COUNT];
