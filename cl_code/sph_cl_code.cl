@@ -171,9 +171,9 @@ int cellId(
 {
 	//xmin, ymin, zmin
 	int4 result;
-	result.x = (int)( particle.pos.x *  hashGridCellSizeInv );
-	result.y = (int)( particle.pos.y *  hashGridCellSizeInv );
-	result.z = (int)( particle.pos.z *  hashGridCellSizeInv );
+	result.x = (int)( particle->pos.x *  hashGridCellSizeInv );
+	result.y = (int)( particle->pos.y *  hashGridCellSizeInv );
+	result.z = (int)( particle->pos.z *  hashGridCellSizeInv );
 	return result;
 }
 __kernel void hashParticles(
@@ -183,7 +183,7 @@ __kernel void hashParticles(
 							#else
 								particle_f
 							#endif 
-								* particle,
+								* particles,
 							uint gridCellsX,
 							uint gridCellsY,
 							uint gridCellsZ,
@@ -195,7 +195,7 @@ __kernel void hashParticles(
 							uint   PARTICLE_COUNT
 							)
 {
-	int id = get_global_id( 0 );
+	/*int id = get_global_id( 0 );
 	if( id >= PARTICLE_COUNT ) return;
 	float4 _position = position[ id ];
 	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
@@ -203,5 +203,5 @@ __kernel void hashParticles(
 	uint2 result;
 	PI_CELL_ID( result ) = cellId_;
 	PI_SERIAL_ID( result ) = id;
-	particleIndex[ id ] = result;
+	particleIndex[ id ] = result;*/
 }
