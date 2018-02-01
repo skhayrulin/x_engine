@@ -35,7 +35,8 @@
 
 #include "ocl_const.h"
 // Structure for description extended class for particle.
-//
+// It contains information for all particular
+// particle its list of neighbours.
 struct extendet_particle {
   size_t p_id;
   int neigbour_list[NEIGHBOUR_COUNT];

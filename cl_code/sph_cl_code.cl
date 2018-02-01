@@ -74,6 +74,9 @@ typedef struct particle_d{
 } particle_d;
 #endif
 
+
+/** Just for test
+*/
 __kernel void work_with_struct(__global struct extendet_particle * ext_particles, 
 							   __global struct 
 							   #ifdef _DOUBLE_PRECISION
@@ -102,11 +105,103 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 	particles[id].type_ = id + 1;
 }
 
-
-__kernel void _init_ext_particles(__global struct extendet_particle * ext_particles){
+/**Initialization of neighbour list by -1 
+* what means that it's no neighbours. 
+*/
+__kernel void _ker_init_ext_particles(__global struct extendet_particle * ext_particles){
 	int id = get_global_id(0);
 	ext_particles[id].p_id = id;
 	for(int i=0;i<NEIGHBOUR_COUNT;++i){
 		ext_particles[id].neigbour_list[i] = -1;
 	}
+}
+
+/** Calc current cell id for each particles
+*/
+__kernel void _ker_calc_cell_id(__global struct 
+							   #ifdef _DOUBLE_PRECISION
+									particle_d
+							   #else
+									particle_f
+							   #endif 
+									* particles){
+
+}
+
+/** Searchin for neigbours foe each particles
+*/
+__kernel void _ker_neighbour_search(__global struct extendet_particle * ext_particles, 
+							   __global struct 
+							   #ifdef _DOUBLE_PRECISION
+									particle_d
+							   #else
+									particle_f
+							   #endif 
+									* particles){
+
+}
+
+int cellId(
+		   int4 cellFactors_,
+		   uint gridCellsX,
+		   uint gridCellsY,
+		   uint gridCellsZ//don't use
+		   )
+{
+	int cellId_ = cellFactors_.x + cellFactors_.y * gridCellsX
+		+ cellFactors_.z * gridCellsX * gridCellsY;
+	return cellId_;
+}
+/** Caculation spatial hash cellId for every particle
+ *  Kernel fill up particleIndex buffer.
+ */
+ int4 cellFactors(
+				 __global struct 
+				#ifdef _DOUBLE_PRECISION
+					particle_d
+				#else
+					particle_f
+				#endif 
+					* particle,
+				 float xmin,
+				 float ymin,
+				 float zmin,
+				 float hashGridCellSizeInv
+				 )
+{
+	//xmin, ymin, zmin
+	int4 result;
+	result.x = (int)( particle.pos.x *  hashGridCellSizeInv );
+	result.y = (int)( particle.pos.y *  hashGridCellSizeInv );
+	result.z = (int)( particle.pos.z *  hashGridCellSizeInv );
+	return result;
+}
+__kernel void hashParticles(
+							__global struct 
+							#ifdef _DOUBLE_PRECISION
+								particle_d
+							#else
+								particle_f
+							#endif 
+								* particle,
+							uint gridCellsX,
+							uint gridCellsY,
+							uint gridCellsZ,
+							float hashGridCellSizeInv,
+							float xmin,
+							float ymin,
+							float zmin,
+							__global uint2 * particleIndex,
+							uint   PARTICLE_COUNT
+							)
+{
+	int id = get_global_id( 0 );
+	if( id >= PARTICLE_COUNT ) return;
+	float4 _position = position[ id ];
+	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
+	int cellId_ = cellId( cellFactors_, gridCellsX, gridCellsY, gridCellsZ ) & 0xffffff; // truncate to low 16 bits
+	uint2 result;
+	PI_CELL_ID( result ) = cellId_;
+	PI_SERIAL_ID( result ) = id;
+	particleIndex[ id ] = result;
 }
