@@ -34,6 +34,7 @@
             "intelliSenseMode": "clang-x64",
             "inludePath": [
                 "/usr/local/include",
+                "/usr/local/include/c++/5.4.0",
                 "/usr/include",
                 "${workspaceRoot}/inc"
             ],
@@ -41,6 +42,7 @@
                 "path": [
                     "/usr/local/include",
                     "/usr/include",
+                    "/usr/local/include/c++/5.4.0",
                     "${workspaceRoot}",
                     "${workspaceRoot}/inc"
                 ]
