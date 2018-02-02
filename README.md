@@ -1,5 +1,5 @@
 # X_ENGINE
-I'm planning collect here all my work on rewrote version of engine
+I'm planning collect here all my work on rewrote version of [sibernetic](https://github.com/openworm/sibernetic) engine
 
 # Build
 Just run make in root folder
