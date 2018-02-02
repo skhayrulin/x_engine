@@ -155,7 +155,7 @@ int cellId(
 /** Caculation spatial hash cellId for every particle
  *  Kernel fill up particleIndex buffer.
  */
- int4 cellFactors(
+ int4 cell_factors(
 				 __global struct 
 				#ifdef _DOUBLE_PRECISION
 					particle_d
@@ -166,17 +166,17 @@ int cellId(
 				 float xmin,
 				 float ymin,
 				 float zmin,
-				 float hashGridCellSizeInv
+				 float hash_grid_cell_size_inv
 				 )
 {
 	//xmin, ymin, zmin
 	int4 result;
-	result.x = (int)( particle->pos.x *  hashGridCellSizeInv );
-	result.y = (int)( particle->pos.y *  hashGridCellSizeInv );
-	result.z = (int)( particle->pos.z *  hashGridCellSizeInv );
+	result.x = (int)( particle->pos.x *  hash_grid_cell_size_inv );
+	result.y = (int)( particle->pos.y *  hash_grid_cell_size_inv );
+	result.z = (int)( particle->pos.z *  hash_grid_cell_size_inv );
 	return result;
 }
-__kernel void hashParticles(
+__kernel void _ker_hash_particles(
 							__global struct 
 							#ifdef _DOUBLE_PRECISION
 								particle_d
@@ -184,21 +184,27 @@ __kernel void hashParticles(
 								particle_f
 							#endif 
 								* particles,
-							uint gridCellsX,
-							uint gridCellsY,
-							uint gridCellsZ,
-							float hashGridCellSizeInv,
+							uint grid_cells_x,
+							uint grid_cells_y,
+							uint grid_cells_Z,
+							float hash_grid_cell_size_inv,
 							float xmin,
 							float ymin,
 							float zmin,
 							__global uint2 * particleIndex,
-							uint   PARTICLE_COUNT
+							uint PARTICLE_COUNT
 							)
 {
-	/*int id = get_global_id( 0 );
+	int id = get_global_id( 0 );
 	if( id >= PARTICLE_COUNT ) return;
-	float4 _position = position[ id ];
-	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
+#ifdef _DOUBLE_PRECISION
+	particle_d
+#else
+	particle_f
+#endif 
+	* particle = particles[id];
+	/*float4 _position = position[ id ];
+	/*int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
 	int cellId_ = cellId( cellFactors_, gridCellsX, gridCellsY, gridCellsZ ) & 0xffffff; // truncate to low 16 bits
 	uint2 result;
 	PI_CELL_ID( result ) = cellId_;
