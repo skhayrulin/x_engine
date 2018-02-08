@@ -36,7 +36,6 @@
 using x_engine::solver::solver_container;
 using x_engine::model::sph_model;
 int main(int argc, char **argv) {
-	int biba;
 	try {
 		std::shared_ptr<sph_model<float>> model(
 			new sph_model<float>("config\\demo2"));
