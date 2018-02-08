@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-//Стреляем в ноги, глобалочки  и все такое. Не параллелится ни в каком виде.
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #elif defined(__linux__)
