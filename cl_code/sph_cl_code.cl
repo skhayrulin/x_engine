@@ -55,6 +55,8 @@
 
 #include "inc/ocl_struct.h"
 
+#define NO_PARTICLE_ID -1
+
 typedef struct particle_f{
 	float4 pos;
 	float4 vel;
@@ -74,7 +76,6 @@ typedef struct particle_d{
 } particle_d;
 #endif
 
-
 /** Just for test
 */
 __kernel void work_with_struct(__global struct extendet_particle * ext_particles, 
@@ -85,9 +86,9 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 									particle_f
 							   #endif 
 									* particles){
-	int id = get_global_id(0);
+	int cell_id_to_find = get_global_id(0);
 #ifdef PRINTF_ON
-	if(id == 0){
+	if(cell_id_to_find == 0){
 		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
 		#ifdef _DOUBLE_PRECISION
 		printf("sizeof() of particles_d is %d\n", sizeof(particle_d) );
@@ -96,27 +97,109 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 #endif
 #ifdef _DOUBLE_PRECISION
 
-	particles[id].pos = (double4)(id, id, id, id);
-	particles[id].vel = (double4)(id, id, id, id);
+	particles[cell_id_to_find].pos = (double4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
+	particles[cell_id_to_find].vel = (double4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
 #else
-	particles[id].pos = (float4)(id, id, id, id);
-	particles[id].vel = (float4)(id, id, id, id);
+	particles[cell_id_to_find].pos = (float4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
+	particles[cell_id_to_find].vel = (float4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
 #endif
-	particles[id].type_ = id + 1;
+	particles[cell_id_to_find].type_ = cell_id_to_find + 1;
 }
 
 /**Initialization of neighbour list by -1 
 * what means that it's no neighbours. 
 */
 __kernel void _ker_init_ext_particles(__global struct extendet_particle * ext_particles){
-	int id = get_global_id(0);
-	ext_particles[id].p_id = id;
+	int cell_id_to_find = get_global_id(0);
+	ext_particles[cell_id_to_find].p_id = cell_id_to_find;
 	for(int i=0;i<NEIGHBOUR_COUNT;++i){
-		ext_particles[id].neigbour_list[i] = -1;
+		ext_particles[cell_id_to_find].neigbour_list[i] = -1;
 	}
 }
 
-/** Calc current cell id for each particles
+__kernel void _ker_grid_cell_indexing(__global struct 
+							   #ifdef _DOUBLE_PRECISION
+									particle_d
+							   #else
+									particle_f
+							   #endif 
+									* particles,
+									uint PARTICLE_COUNT,
+									__global uint* grid_cell_index,
+									uint grid_cell_count){
+	int cell_id_to_find = get_global_id(0);
+
+	//check for trivial cases
+	if (cell_id_to_find > grid_cell_count){
+		return;
+	}
+    if (PARTICLE_COUNT == 0) {
+        /* array is empty */
+        return;
+    } else if (particles[0].cell_id > cell_id_to_find) {
+        /* cell_id_to_find is lower than everyone else */
+        return;
+    } else if (particles[PARTICLE_COUNT - 1].cell_id < cell_id_to_find) {
+        /* cell_id_to_find is greater than everyone else */
+        return;
+    }
+
+	if (cell_id_to_find == 0){
+		grid_cell_index[cell_id_to_find] = 0;
+		return;
+	}
+	if (cell_id_to_find == grid_cell_count){
+		grid_cell_index[cell_id_to_find] = PARTICLE_COUNT;
+		return;		
+	}
+	//end check
+
+	//binary search
+	int low = 0;
+	int high = PARTICLE_COUNT - 1;
+	bool converged = false;
+	int particle_id = NO_PARTICLE_ID;
+	int cur_part_cell_id = -1;
+
+	while (!converged){
+		if (low > high){
+			converged = true;
+			particle_id = NO_PARTICLE_ID;
+			continue;
+		}
+
+		int middle = low + (high - low) / 2;
+		cur_part_cell_id = particles[middle].cell_id;
+		particle_id = middle;
+		if (cell_id_to_find <= cur_part_cell_id){
+			high = middle;
+		} else {
+			low = middle + 1;
+		}
+
+	}
+	//end binary search
+
+	//find lowest particle_id that gives cell_id_to_find and init grid_cell_index value
+	if (!converged && particles[last].cell_id == cell_id_to_find){
+		particle_id = last;
+		if (low == high){
+			particle_id = low;
+		}
+		//[QUEST] Is there no need to check if last == 0 ? I think so because if last == 0 it means that we wanted to find cell_id_to_find == 0. That case was handled in trivial cases
+
+		//find lowest particle_id that gives cell_id_to_find
+		// [QUEST] is the while condition below correct?
+		while (particles[particle_id - 1] && particles[particle_id - 1].cell_id == cell_id_to_find){
+			particle_id--;
+		}
+	} else {
+		particle_id = NO_PARTICLE_ID;
+	}
+ 	grid_cell_index[ cell_id_to_find ] = particle_id;
+}
+
+/** Calc current cell cell_id_to_find for each particles
 */
 __kernel void _ker_calc_cell_id(__global struct 
 							   #ifdef _DOUBLE_PRECISION
@@ -155,7 +238,7 @@ int cellId(
 /** Caculation spatial hash cellId for every particle
  *  Kernel fill up particleIndex buffer.
  */
- int4 cell_factors(
+ int4 cellFactors(
 				 __global struct 
 				#ifdef _DOUBLE_PRECISION
 					particle_d
@@ -166,48 +249,42 @@ int cellId(
 				 float xmin,
 				 float ymin,
 				 float zmin,
-				 float hash_grid_cell_size_inv
+				 float hashGridCellSizeInv
 				 )
 {
 	//xmin, ymin, zmin
 	int4 result;
-	result.x = (int)( particle->pos.x *  hash_grid_cell_size_inv );
-	result.y = (int)( particle->pos.y *  hash_grid_cell_size_inv );
-	result.z = (int)( particle->pos.z *  hash_grid_cell_size_inv );
+	result.x = (int)( particle.pos.x *  hashGridCellSizeInv );
+	result.y = (int)( particle.pos.y *  hashGridCellSizeInv );
+	result.z = (int)( particle.pos.z *  hashGridCellSizeInv );
 	return result;
 }
-__kernel void _ker_hash_particles(
+__kernel void hashParticles(
 							__global struct 
 							#ifdef _DOUBLE_PRECISION
 								particle_d
 							#else
 								particle_f
 							#endif 
-								* particles,
-							uint grid_cells_x,
-							uint grid_cells_y,
-							uint grid_cells_Z,
-							float hash_grid_cell_size_inv,
+								* particle,
+							uint gridCellsX,
+							uint gridCellsY,
+							uint gridCellsZ,
+							float hashGridCellSizeInv,
 							float xmin,
 							float ymin,
 							float zmin,
 							__global uint2 * particleIndex,
-							uint PARTICLE_COUNT
+							uint   PARTICLE_COUNT
 							)
 {
-	int id = get_global_id( 0 );
-	if( id >= PARTICLE_COUNT ) return;
-#ifdef _DOUBLE_PRECISION
-	particle_d
-#else
-	particle_f
-#endif 
-	* particle = particles[id];
-	/*float4 _position = position[ id ];
-	/*int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
+	int cell_id_to_find = get_global_id( 0 );
+	if( cell_id_to_find >= PARTICLE_COUNT ) return;
+	float4 _position = particle[ cell_id_to_find ];
+	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
 	int cellId_ = cellId( cellFactors_, gridCellsX, gridCellsY, gridCellsZ ) & 0xffffff; // truncate to low 16 bits
 	uint2 result;
 	PI_CELL_ID( result ) = cellId_;
-	PI_SERIAL_ID( result ) = id;
-	particleIndex[ id ] = result;*/
+	PI_SERIAL_ID( result ) = cell_id_to_find;
+	particleIndex[ cell_id_to_find ] = result;
 }
