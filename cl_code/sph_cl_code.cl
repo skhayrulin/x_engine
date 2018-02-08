@@ -86,9 +86,9 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 									particle_f
 							   #endif 
 									* particles){
-	int cell_id_to_find = get_global_id(0);
+	int id = get_global_id(0);
 #ifdef PRINTF_ON
-	if(cell_id_to_find == 0){
+	if(id == 0){
 		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
 		#ifdef _DOUBLE_PRECISION
 		printf("sizeof() of particles_d is %d\n", sizeof(particle_d) );
@@ -97,23 +97,23 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 #endif
 #ifdef _DOUBLE_PRECISION
 
-	particles[cell_id_to_find].pos = (double4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
-	particles[cell_id_to_find].vel = (double4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
+	particles[id].pos = (double4)(id, id, id, id);
+	particles[id].vel = (double4)(id, id, id, id);
 #else
-	particles[cell_id_to_find].pos = (float4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
-	particles[cell_id_to_find].vel = (float4)(cell_id_to_find, cell_id_to_find, cell_id_to_find, cell_id_to_find);
+	particles[id].pos = (float4)(id, id, id, id);
+	particles[id].vel = (float4)(id, id, id, id);
 #endif
-	particles[cell_id_to_find].type_ = cell_id_to_find + 1;
+	particles[id].type_ = id + 1;
 }
 
 /**Initialization of neighbour list by -1 
 * what means that it's no neighbours. 
 */
 __kernel void _ker_init_ext_particles(__global struct extendet_particle * ext_particles){
-	int cell_id_to_find = get_global_id(0);
-	ext_particles[cell_id_to_find].p_id = cell_id_to_find;
+	int id = get_global_id(0);
+	ext_particles[id].p_id = id;
 	for(int i=0;i<NEIGHBOUR_COUNT;++i){
-		ext_particles[cell_id_to_find].neigbour_list[i] = -1;
+		ext_particles[id].neigbour_list[i] = -1;
 	}
 }
 
@@ -199,7 +199,7 @@ __kernel void _ker_grid_cell_indexing(__global struct
  	grid_cell_index[ cell_id_to_find ] = particle_id;
 }
 
-/** Calc current cell cell_id_to_find for each particles
+/** Calc current cell id for each particles
 */
 __kernel void _ker_calc_cell_id(__global struct 
 							   #ifdef _DOUBLE_PRECISION
@@ -278,13 +278,13 @@ __kernel void hashParticles(
 							uint   PARTICLE_COUNT
 							)
 {
-	int cell_id_to_find = get_global_id( 0 );
-	if( cell_id_to_find >= PARTICLE_COUNT ) return;
-	float4 _position = particle[ cell_id_to_find ];
+	int id = get_global_id( 0 );
+	if( id >= PARTICLE_COUNT ) return;
+	float4 _position = particle[ id ];
 	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
 	int cellId_ = cellId( cellFactors_, gridCellsX, gridCellsY, gridCellsZ ) & 0xffffff; // truncate to low 16 bits
 	uint2 result;
 	PI_CELL_ID( result ) = cellId_;
-	PI_SERIAL_ID( result ) = cell_id_to_find;
-	particleIndex[ cell_id_to_find ] = result;
+	PI_SERIAL_ID( result ) = id;
+	particleIndex[ id ] = result;
 }
