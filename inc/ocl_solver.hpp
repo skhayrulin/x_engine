@@ -151,7 +151,6 @@ namespace x_engine {
 
 				cl::Kernel mat_mul_kernel;
 				create_ocl_kernel("MatMulKernel", mat_mul_kernel);
-				size_t biba = sizeof(A);
 				matrix_multiply(A, B, C, dev->context, mat_mul_kernel, queue, 1);
 
 			}

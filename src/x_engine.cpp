@@ -43,15 +43,12 @@ int main(int argc, char **argv) {
 	}
 	catch (x_engine::parser_error &e) {
 		std::cout << e.what() << std::endl;
-		//std::cin >> biba;
 		return EXIT_FAILURE;
 	}
 	catch (x_engine::ocl_error &e) {
 		std::cout << e.what() << std::endl;
-		//std::cin >> biba;
 		return EXIT_FAILURE;
 	}
 
-	//std::cin >> biba;
 	return EXIT_SUCCESS;
 }
