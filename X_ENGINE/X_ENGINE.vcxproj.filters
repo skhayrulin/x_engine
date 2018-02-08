@@ -68,6 +68,9 @@
     <ClInclude Include="..\inc\OpenCL\cl.hpp">
       <Filter>Файлы заголовков\OpenCL</Filter>
     </ClInclude>
+    <ClInclude Include="measurement.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\cl_code\sph_cl_code.cl">

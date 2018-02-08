@@ -53,9 +53,7 @@
 	#endif
 #endif
 
-#include "inc/ocl_struct.h"
-
-#define NO_PARTICLE_ID -1
+#include "inc\\ocl_struct.h"
 
 typedef struct particle_f{
 	float4 pos;
@@ -75,6 +73,7 @@ typedef struct particle_d{
 	double pressure;
 } particle_d;
 #endif
+
 
 /** Just for test
 */
@@ -115,88 +114,6 @@ __kernel void _ker_init_ext_particles(__global struct extendet_particle * ext_pa
 	for(int i=0;i<NEIGHBOUR_COUNT;++i){
 		ext_particles[id].neigbour_list[i] = -1;
 	}
-}
-
-__kernel void _ker_grid_cell_indexing(__global struct 
-							   #ifdef _DOUBLE_PRECISION
-									particle_d
-							   #else
-									particle_f
-							   #endif 
-									* particles,
-									uint PARTICLE_COUNT,
-									__global uint* grid_cell_index,
-									uint grid_cell_count){
-	int cell_id_to_find = get_global_id(0);
-
-	//check for trivial cases
-	if (cell_id_to_find > grid_cell_count){
-		return;
-	}
-    if (PARTICLE_COUNT == 0) {
-        /* array is empty */
-        return;
-    } else if (particles[0].cell_id > cell_id_to_find) {
-        /* cell_id_to_find is lower than everyone else */
-        return;
-    } else if (particles[PARTICLE_COUNT - 1].cell_id < cell_id_to_find) {
-        /* cell_id_to_find is greater than everyone else */
-        return;
-    }
-
-	if (cell_id_to_find == 0){
-		grid_cell_index[cell_id_to_find] = 0;
-		return;
-	}
-	if (cell_id_to_find == grid_cell_count){
-		grid_cell_index[cell_id_to_find] = PARTICLE_COUNT;
-		return;		
-	}
-	//end check
-
-	//binary search
-	int low = 0;
-	int high = PARTICLE_COUNT - 1;
-	bool converged = false;
-	int particle_id = NO_PARTICLE_ID;
-	int cur_part_cell_id = -1;
-
-	while (!converged){
-		if (low > high){
-			converged = true;
-			particle_id = NO_PARTICLE_ID;
-			continue;
-		}
-
-		int middle = low + (high - low) / 2;
-		cur_part_cell_id = particles[middle].cell_id;
-		particle_id = middle;
-		if (cell_id_to_find <= cur_part_cell_id){
-			high = middle;
-		} else {
-			low = middle + 1;
-		}
-
-	}
-	//end binary search
-
-	//find lowest particle_id that gives cell_id_to_find and init grid_cell_index value
-	if (!converged && particles[last].cell_id == cell_id_to_find){
-		particle_id = last;
-		if (low == high){
-			particle_id = low;
-		}
-		//[QUEST] Is there no need to check if last == 0 ? I think so because if last == 0 it means that we wanted to find cell_id_to_find == 0. That case was handled in trivial cases
-
-		//find lowest particle_id that gives cell_id_to_find
-		// [QUEST] is the while condition below correct?
-		while (particles[particle_id - 1] && particles[particle_id - 1].cell_id == cell_id_to_find){
-			particle_id--;
-		}
-	} else {
-		particle_id = NO_PARTICLE_ID;
-	}
- 	grid_cell_index[ cell_id_to_find ] = particle_id;
 }
 
 /** Calc current cell id for each particles
@@ -254,9 +171,9 @@ int cellId(
 {
 	//xmin, ymin, zmin
 	int4 result;
-	result.x = (int)( particle.pos.x *  hashGridCellSizeInv );
-	result.y = (int)( particle.pos.y *  hashGridCellSizeInv );
-	result.z = (int)( particle.pos.z *  hashGridCellSizeInv );
+	result.x = (int)( particle->pos.x *  hashGridCellSizeInv );
+	result.y = (int)( particle->pos.y *  hashGridCellSizeInv );
+	result.z = (int)( particle->pos.z *  hashGridCellSizeInv );
 	return result;
 }
 __kernel void hashParticles(
@@ -266,7 +183,7 @@ __kernel void hashParticles(
 							#else
 								particle_f
 							#endif 
-								* particle,
+								* particles,
 							uint gridCellsX,
 							uint gridCellsY,
 							uint gridCellsZ,
@@ -278,13 +195,62 @@ __kernel void hashParticles(
 							uint   PARTICLE_COUNT
 							)
 {
-	int id = get_global_id( 0 );
+	/*int id = get_global_id( 0 );
 	if( id >= PARTICLE_COUNT ) return;
-	float4 _position = particle[ id ];
+	float4 _position = position[ id ];
 	int4 cellFactors_ = cellFactors( _position, xmin, ymin, zmin, hashGridCellSizeInv );
 	int cellId_ = cellId( cellFactors_, gridCellsX, gridCellsY, gridCellsZ ) & 0xffffff; // truncate to low 16 bits
 	uint2 result;
 	PI_CELL_ID( result ) = cellId_;
 	PI_SERIAL_ID( result ) = id;
-	particleIndex[ id ] = result;
+	particleIndex[ id ] = result;*/
+}
+
+//__kernel void benchmarking() { 
+//	return;
+//}
+//
+//
+//void matrixMultiplication(__global float* A, __global float* B, __global float* C, int widthA, int widthB) {
+//	int i = get_global_id(0);
+//	int j = get_global_id(1);
+//	float value = 0;
+//	for (int k = 0; k < widthA; k++)
+//	{
+//		value = value + A[k + j * widthA] * B[k*widthB + i];
+//	}
+//	C[i + widthA * j] = value;
+//}
+
+typedef struct {
+	int width;
+	int height;
+	__global float* elements;
+} Matrix;
+// Thread block size
+#define BLOCK_SIZE 16
+// Matrix multiplication function called by MatMulKernel()
+void matrixMul(Matrix A, Matrix B, Matrix C)
+{
+	float Cvalue = 0;
+	int row = get_global_id(1);
+	int col = get_global_id(0);
+	for (int e = 0; e < A.width; ++e)
+		Cvalue += A.elements[row * A.width + e]
+		* B.elements[e * B.width + col];
+	C.elements[row * C.width + col] = Cvalue;
+}
+// Matrix multiplication kernel called by MatMulHost()
+__kernel void MatMulKernel(
+	int Awidth, int Aheight, __global float* Aelements,
+	int Bwidth, int Bheight, __global float* Belements,
+	int Cwidth, int Cheight, __global float* Celements,
+	int factor)
+{
+	Matrix A = { Awidth, Aheight, Aelements };
+	Matrix B = { Bwidth, Bheight, Belements };
+	Matrix C = { Cwidth, Cheight, Celements };
+	for (int i = 0; i < factor; ++i) { 
+		matrixMul(A, B, C);
+	}
 }

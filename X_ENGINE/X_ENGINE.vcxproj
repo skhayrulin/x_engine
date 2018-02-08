@@ -137,6 +137,7 @@
     <ClInclude Include="..\inc\util\ocl_helper.h" />
     <ClInclude Include="..\inc\util\x_error.h" />
     <ClInclude Include="..\inc\x_device.h" />
+    <ClInclude Include="measurement.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\cl_code\sph_cl_code.cl" />
