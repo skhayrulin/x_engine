@@ -35,6 +35,23 @@
 
 using x_engine::model::sph_model;
 using x_engine::solver::solver_container;
+
+int usage() {
+  std::string version = "0.0.1";
+  std::cout
+      << "\nx_engine v" << version << "\n  This is a C++/OpenCL "
+      << "implementation of the SPH algorithm supplemented with"
+      << "with many posibilities"
+      << "a set of biomechanics related features"
+      << "Usage: ./bin/x_engine [OPTION]\n\n"
+      << "    -multi_dev                 Run without on all available devices"
+      << "                               but default it will run only one.\n\n"
+      << "    -help, -h, -?, --help      Print this information\n\n"
+      << "Full documentation at: <https://github.com/openworm/sibernetic>\n"
+      << "Please report any bugs/issues "
+      << "to: <https://github.com/openworm/sibernetic/issues>\n";
+  return EXIT_SUCCESS;
+}
 int main(int argc, char **argv) {
   try {
     std::shared_ptr<sph_model<float>> model(

@@ -52,8 +52,11 @@
 		#error "Double precision floating point not supported by OpenCL implementation."
 	#endif
 #endif
-
+#if defined(_WIN32) || defined(_WIN64)
 #include "inc\\ocl_struct.h"
+#else
+#include "inc/ocl_struct.h"
+#endif
 
 typedef struct particle_f{
 	float4 pos;
@@ -63,6 +66,7 @@ typedef struct particle_f{
 	float density;
 	float pressure;
 } particle_f;
+
 #ifdef _DOUBLE_PRECISION
 typedef struct particle_d{
 	double4 pos;

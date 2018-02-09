@@ -113,9 +113,8 @@ private:
     }
     std::ifstream file(cl_program_file);
     if (!file.is_open()) {
-      throw ocl_error(msg +
-                      "Could not open file with OpenCL program check "
-                      "input arguments oclsourcepath: " +
+      throw ocl_error(msg + "Could not open file with OpenCL program check "
+                            "input arguments oclsourcepath: " +
                       cl_program_file);
     }
     std::string programSource(std::istreambuf_iterator<char>(file),
