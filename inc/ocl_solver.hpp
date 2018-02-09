@@ -56,10 +56,10 @@ namespace solver {
 using std::cout;
 using std::endl;
 using std::shared_ptr;
-using x_engine::ocl_error;
-using x_engine::model::sph_model;
 using x_engine::model::particle;
 using x_engine::model::partition;
+using x_engine::model::sph_model;
+using x_engine::ocl_error;
 // OCL constans block
 #define QUEUE_EACH_KERNEL 1
 
@@ -98,9 +98,9 @@ private:
   cl::Program program;
   void init_buffers() {
     create_ocl_buffer("particles", b_particles, CL_MEM_READ_WRITE,
-                      model->size() * sizeof(particle<T>));
+                      p.size() * sizeof(particle<T>));
     create_ocl_buffer("ext_particles", b_ext_particles, CL_MEM_READ_WRITE,
-                      model->size() * sizeof(extendet_particle));
+                      p.size() * sizeof(extendet_particle));
   }
   void init_kernels() {}
   virtual void init_ext_particles() {}
@@ -112,8 +112,9 @@ private:
     }
     std::ifstream file(cl_program_file);
     if (!file.is_open()) {
-      throw ocl_error(msg + "Could not open file with OpenCL program check "
-                            "input arguments oclsourcepath: " +
+      throw ocl_error(msg +
+                      "Could not open file with OpenCL program check "
+                      "input arguments oclsourcepath: " +
                       cl_program_file);
     }
     std::string programSource(std::istreambuf_iterator<char>(file),
@@ -167,6 +168,6 @@ private:
     }
   }
 };
-}
-}
+} // namespace solver
+} // namespace x_engine
 #endif // X_OCLSOLVER
