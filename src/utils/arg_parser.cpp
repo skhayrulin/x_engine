@@ -30,40 +30,20 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#include "solver_container.hpp"
 #include "util/arg_parser.h"
-#include <iostream>
 
-using x_engine::model::sph_model;
-using x_engine::solver::solver_container;
+arg_parser::arg_parser(int argc, char **argv) {
+  for (int i = 1; i < argc; ++i) {
+    arguments.push_back(std::string(argv[i]));
+  }
+}
+bool arg_parser::check_arg(const std::string &arg) const {
+  return std::find(arguments.begin(), arguments.end(), arg) != arguments.end();
+}
 
-int main(int argc, char **argv) {
-  arg_parser prsr(argc, argv);
-  if (prsr.check_arg("-h") || prsr.check_arg("--help") ||
-      prsr.check_arg("-?") || prsr.check_arg("-help")) {
-    return arg_parser::show_usage();
-  }
-  std::string model_name;
-  size_t mode = 1;
-  if (prsr.check_arg("-f")) {
-    model_name = prsr.get_arg("-f");
-  } else {
-    model_name = "config/demo1";
-  }
-  if (prsr.check_arg("--multi_dev")) {
-    mode = 2;
-  }
-  try {
-    std::shared_ptr<sph_model<float>> model(new sph_model<float>(model_name));
-    solver_container<float> &s_con =
-        solver_container<float>::instance(model, mode);
-  } catch (x_engine::parser_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
-  } catch (x_engine::ocl_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  return EXIT_SUCCESS;
+const std::string &arg_parser::get_arg(const std::string &arg) const {
+  auto itr = std::find(arguments.begin(), arguments.end(), arg);
+  if (itr != arguments.end() && ++itr != arguments.end())
+    return *itr;
+  return std::string("");
 }

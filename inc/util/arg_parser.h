@@ -30,40 +30,38 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#include "solver_container.hpp"
-#include "util/arg_parser.h"
+#ifndef ARG_PARSER
+#define ARG_PARSER
 #include <iostream>
-
-using x_engine::model::sph_model;
-using x_engine::solver::solver_container;
-
-int main(int argc, char **argv) {
-  arg_parser prsr(argc, argv);
-  if (prsr.check_arg("-h") || prsr.check_arg("--help") ||
-      prsr.check_arg("-?") || prsr.check_arg("-help")) {
-    return arg_parser::show_usage();
-  }
-  std::string model_name;
-  size_t mode = 1;
-  if (prsr.check_arg("-f")) {
-    model_name = prsr.get_arg("-f");
-  } else {
-    model_name = "config/demo1";
-  }
-  if (prsr.check_arg("--multi_dev")) {
-    mode = 2;
-  }
-  try {
-    std::shared_ptr<sph_model<float>> model(new sph_model<float>(model_name));
-    solver_container<float> &s_con =
-        solver_container<float>::instance(model, mode);
-  } catch (x_engine::parser_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
-  } catch (x_engine::ocl_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
+#include <string>
+#include <vector>
+// Class for parsing command line arguments
+class arg_parser {
+public:
+  arg_parser(int argc, char **argv);
+  bool check_arg(const std::string &arg) const;
+  const std::string &get_arg(const std::string &arg) const;
+  static int show_usage() {
+    std::string version = "0.0.1";
+    std::cout
+        << "\nx_engine v" << version << "\n  This is a C++/OpenCL "
+        << "implementation of the SPH algorithm supplemented with"
+        << "with many posibilities"
+        << "a set of biomechanics related features"
+        << "Usage: ./bin/x_engine [OPTION]\n\n"
+        << "    --multi_dev                Run without on all available "
+           "devices\n"
+        << "                               but default it will run only "
+           "one.\n\n"
+        << "    -f <config_file>           Path to configuration file\n\n."
+        << "    -help, -h, -?, --help      Print this information\n\n"
+        << "Full documentation at: <https://github.com/openworm/sibernetic>\n"
+        << "Please report any bugs/issues "
+        << "to: <https://github.com/openworm/sibernetic/issues>\n";
+    return EXIT_SUCCESS;
   }
 
-  return EXIT_SUCCESS;
-}
+private:
+  std::vector<std::string> arguments;
+};
+#endif // ARG_PARSER

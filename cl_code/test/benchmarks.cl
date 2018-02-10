@@ -30,40 +30,51 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
-#include "solver_container.hpp"
-#include "util/arg_parser.h"
-#include <iostream>
-
-using x_engine::model::sph_model;
-using x_engine::solver::solver_container;
-
-int main(int argc, char **argv) {
-  arg_parser prsr(argc, argv);
-  if (prsr.check_arg("-h") || prsr.check_arg("--help") ||
-      prsr.check_arg("-?") || prsr.check_arg("-help")) {
-    return arg_parser::show_usage();
-  }
-  std::string model_name;
-  size_t mode = 1;
-  if (prsr.check_arg("-f")) {
-    model_name = prsr.get_arg("-f");
-  } else {
-    model_name = "config/demo1";
-  }
-  if (prsr.check_arg("--multi_dev")) {
-    mode = 2;
-  }
-  try {
-    std::shared_ptr<sph_model<float>> model(new sph_model<float>(model_name));
-    solver_container<float> &s_con =
-        solver_container<float>::instance(model, mode);
-  } catch (x_engine::parser_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
-  } catch (x_engine::ocl_error &e) {
-    std::cout << e.what() << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  return EXIT_SUCCESS;
+//__kernel void benchmarking() { 
+//	return;
+//}
+//
+//
+//void matrixMultiplication(__global float* A, __global float* B, __global float* C, int widthA, int widthB) {
+//	int i = get_global_id(0);
+//	int j = get_global_id(1);
+//	float value = 0;
+//	for (int k = 0; k < widthA; k++)
+//	{
+//		value = value + A[k + j * widthA] * B[k*widthB + i];
+//	}
+//	C[i + widthA * j] = value;
+//}
+// TODO it should be removed to other ocl file 
+typedef struct {
+	int width;
+	int height;
+	__global float* elements;
+} Matrix;
+// Thread block size
+#define BLOCK_SIZE 16
+// Matrix multiplication function called by MatMulKernel()
+void matrixMul(Matrix A, Matrix B, Matrix C)
+{
+	float Cvalue = 0;
+	int row = get_global_id(1);
+	int col = get_global_id(0);
+	for (int e = 0; e < A.width; ++e)
+		Cvalue += A.elements[row * A.width + e]
+		* B.elements[e * B.width + col];
+	C.elements[row * C.width + col] = Cvalue;
+}
+// Matrix multiplication kernel called by MatMulHost()
+__kernel void MatMulKernel(
+	int Awidth, int Aheight, __global float* Aelements,
+	int Bwidth, int Bheight, __global float* Belements,
+	int Cwidth, int Cheight, __global float* Celements,
+	int factor)
+{
+	Matrix A = { Awidth, Aheight, Aelements };
+	Matrix B = { Bwidth, Bheight, Belements };
+	Matrix C = { Cwidth, Cheight, Celements };
+	for (int i = 0; i < factor; ++i) { 
+		matrixMul(A, B, C);
+	}
 }
