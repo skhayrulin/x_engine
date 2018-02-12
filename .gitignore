@@ -31,11 +31,12 @@
 *.out
 *.app
 
+# VS files
+.sln
 
 # Folders
+# VS folders
 release/*
 .vs/*
 Debug/*
-X_ENGINE/Debug/*
-X_ENGINE/X_ENGINE.vcxproj.user
-X_ENGINE/x64/*
+X_ENGINE/*
