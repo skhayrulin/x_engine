@@ -29,6 +29,6 @@ std::string make_msg(const std::string &msg, T val, Args... args) {
   format_str = make_msg(format_str, args...);
   return format_str;
 }
-}
+} // namespace x_engine
 
 #endif
