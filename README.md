@@ -14,12 +14,13 @@ Than run program
 	./bin/x_engine
 
 # Testing
-
 Run test just run `make` with key `test` 
 
 	make test
 
 It works but has only one simple google example test. For work with test you need to install google test lib.
+# Command arguments
+You can see list of all possible command arguments just run application with key `-h or --help -?`.
 
 # What I plane to include in this engine
 - All code base will be based on C++11/14
