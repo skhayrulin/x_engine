@@ -53,7 +53,7 @@ public:
            "devices\n"
         << "                               but default it will run only "
            "one.\n\n"
-        << "    -f <config_file>           Path to configuration file\n\n."
+        << "    -f <config_file>           Path to configuration file.\n\n"
         << "    -help, -h, -?, --help      Print this information\n\n"
         << "Full documentation at: <https://github.com/openworm/sibernetic>\n"
         << "Please report any bugs/issues "
