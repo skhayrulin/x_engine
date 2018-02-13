@@ -45,7 +45,7 @@ private:
           break;
         }
       }
-      if (_solver.size()) {
+      if (_solvers.size()) {
         model->make_partition(
             _solvers.size()); // TODO to whink about is in future we
                               // can't init one or more

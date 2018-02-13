@@ -31,6 +31,7 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 #include "util/arg_parser.h"
+#include <algorithm>
 
 arg_parser::arg_parser(int argc, char **argv) {
   for (int i = 1; i < argc; ++i) {
