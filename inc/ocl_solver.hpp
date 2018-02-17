@@ -81,6 +81,8 @@ public:
     this->p = p;
     init_buffers();
     init_kernels();
+    copy_buffer_to_device((void *)&(model->get_particles()[p.start]),
+                          b_particles, p.size() * sizeof(particle<T>));
   }
   ~ocl_solver() {}
   virtual void run_neighbour_search() {}
@@ -153,8 +155,8 @@ private:
     int err;
     b = cl::Buffer(dev->context, flags, size, NULL, &err);
     if (err != CL_SUCCESS) {
-      std::string error_m = "Buffer creation failed: ";
-      error_m.append(name);
+      std::string error_m =
+          make_msg("Buffer creation failed: ", name, " Error code is ", err);
       throw ocl_error(error_m);
     }
   }
@@ -162,10 +164,33 @@ private:
     int err;
     k = cl::Kernel(program, name, &err);
     if (err != CL_SUCCESS) {
-      std::string error_m = "Kernel creation failed: ";
-      error_m.append(name);
+      std::string error_m =
+          make_msg("Buffer creation failed: ", name, " Error code is ", err);
       throw ocl_error(error_m);
     }
+  }
+  void copy_buffer_to_device(const void *host_b, cl::Buffer &ocl_b,
+                             const int size) {
+    // Actualy we should check  size and type
+    int err = queue.enqueueWriteBuffer(ocl_b, CL_TRUE, 0, size, host_b);
+    if (err != CL_SUCCESS) {
+      std::string error_m =
+          make_msg("Copy buffer to device is failed error code is ", err);
+      throw ocl_error(error_m);
+    }
+    queue.finish();
+  }
+
+  void copy_buffer_from_device(void *host_b, const cl::Buffer &ocl_b,
+                               const int size) {
+    // Actualy we should check  size and type
+    int err = queue.enqueueReadBuffer(ocl_b, CL_TRUE, 0, size, host_b);
+    if (err != CL_SUCCESS) {
+      std::string error_m =
+          make_msg("Copy buffer from device is failed error code is ", err);
+      throw ocl_error(error_m);
+    }
+    queue.finish();
   }
 };
 } // namespace solver

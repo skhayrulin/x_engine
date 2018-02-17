@@ -58,7 +58,7 @@ struct partition {
    */
   size_t start;
   size_t end;
-  size_t size() { return end - start; }
+  size_t size() const { return end - start; }
 };
 template <class T = float, class container = std::vector<particle<T>>>
 class sph_model {

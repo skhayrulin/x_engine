@@ -81,7 +81,7 @@ typedef struct particle_d{
 
 /** Just for test
 */
-__kernel void work_with_struct(__global struct extendet_particle * ext_particles, 
+__kernel void _ker_check_copy(__global struct extendet_particle * ext_particles, 
 							   __global struct 
 							   #ifdef _DOUBLE_PRECISION
 									particle_d
@@ -92,21 +92,16 @@ __kernel void work_with_struct(__global struct extendet_particle * ext_particles
 	int id = get_global_id(0);
 #ifdef PRINTF_ON
 	if(id == 0){
-		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
-		#ifdef _DOUBLE_PRECISION
+#ifdef _DOUBLE_PRECISION
 		printf("sizeof() of particles_d is %d\n", sizeof(particle_d) );
-		#endif
+#else
+		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
+#endif
 	}
 #endif
-#ifdef _DOUBLE_PRECISION
-
-	particles[id].pos = (double4)(id, id, id, id);
-	particles[id].vel = (double4)(id, id, id, id);
-#else
-	particles[id].pos = (float4)(id, id, id, id);
-	particles[id].vel = (float4)(id, id, id, id);
-#endif
-	particles[id].type_ = id + 1;
+	if(id == 0 && particles[0].pos.x == 1.67 && particles[0].pos.y == 1.67 && particles[0].pos.z == 1.67 ){
+		printf("\nTEST PASSED.\n");
+	}
 }
 
 /**Initialization of neighbour list by -1 
@@ -209,3 +204,4 @@ __kernel void hashParticles(
 	PI_SERIAL_ID( result ) = id;
 	particleIndex[ id ] = result;*/
 }
+
