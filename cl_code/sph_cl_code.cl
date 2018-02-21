@@ -61,8 +61,8 @@
 typedef struct particle_f{
 	float4 pos;
 	float4 vel;
-	size_t cell_id;
 	size_t type_;
+	size_t cell_id;   
 	float density;
 	float pressure;
 } particle_f;
@@ -71,8 +71,8 @@ typedef struct particle_f{
 typedef struct particle_d{
 	double4 pos;
 	double4 vel;
-	size_t cell_id;
 	size_t type_;
+	size_t cell_id;
 	double density;
 	double pressure;
 } particle_d;
