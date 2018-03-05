@@ -58,45 +58,36 @@
 #include "inc/ocl_struct.h"
 #endif
 
-typedef struct particle_f{
-	float4 pos;
-	float4 vel;
-	size_t type_;
-	size_t cell_id;   
-	float density;
-	float pressure;
-} particle_f;
-
+typedef struct particle{
 #ifdef _DOUBLE_PRECISION
-typedef struct particle_d{
 	double4 pos;
 	double4 vel;
+#else
+	float4 pos;
+	float4 vel;
+#endif
 	size_t type_;
 	size_t cell_id;
+#ifdef _DOUBLE_PRECISION
 	double density;
 	double pressure;
-} particle_d;
+#else
+	float density;
+	float pressure;
 #endif
+} particle;
 
 
 /** Just for test
 */
 __kernel void _ker_check_copy(__global struct extendet_particle * ext_particles, 
 							   __global struct 
-							   #ifdef _DOUBLE_PRECISION
-									particle_d
-							   #else
-									particle_f
-							   #endif 
-									* particles){
+							   	particle
+							   	* particles){
 	int id = get_global_id(0);
 #ifdef PRINTF_ON
 	if(id == 0){
-#ifdef _DOUBLE_PRECISION
-		printf("sizeof() of particles_d is %d\n", sizeof(particle_d) );
-#else
-		printf("sizeof() of particles_f is %d\n", sizeof(particle_f) );
-#endif
+		printf("sizeof() of particles_f is %d\n", sizeof(particle) );
 	}
 #endif
 	if(id == 0 && particles[0].pos.x == 1.67 && particles[0].pos.y == 1.67 && particles[0].pos.z == 1.67 ){
@@ -118,12 +109,7 @@ __kernel void _ker_init_ext_particles(__global struct extendet_particle * ext_pa
 /** Calc current cell id for each particles
 */
 __kernel void _ker_calc_cell_id(__global struct 
-							   #ifdef _DOUBLE_PRECISION
-									particle_d
-							   #else
-									particle_f
-							   #endif 
-									* particles){
+								particle * particles){
 
 }
 
@@ -131,20 +117,14 @@ __kernel void _ker_calc_cell_id(__global struct
 */
 __kernel void _ker_neighbour_search(__global struct extendet_particle * ext_particles, 
 							   __global struct 
-							   #ifdef _DOUBLE_PRECISION
-									particle_d
-							   #else
-									particle_f
-							   #endif 
-									* particles){
-
+							   	particle * particles){
 }
 
 int cell_id(
 		   int4 cell_factors_,
 		   uint grid_cells_X,
 		   uint grid_cells_Y,
-		   uint grid_cells_Z//don't use
+		   uint grid_cells_Z//doesn't use
 		   )
 {
 	int cell_id = cell_factors_.x + cell_factors_.y * grid_cells_X
@@ -156,12 +136,7 @@ int cell_id(
  */
  int4 cell_factors(
 				 __global struct 
-				#ifdef _DOUBLE_PRECISION
-					particle_d
-				#else
-					particle_f
-				#endif 
-					* particle,
+				 particle * particle,
 				 float x_min,
 				 float y_min,
 				 float z_min,
@@ -177,12 +152,7 @@ int cell_id(
 }
 __kernel void hashParticles(
 							__global struct 
-							#ifdef _DOUBLE_PRECISION
-								particle_d
-							#else
-								particle_f
-							#endif 
-								* particles,
+							particle * particles,
 							uint gridCellsX,
 							uint gridCellsY,
 							uint gridCellsZ,
